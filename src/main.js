@@ -5,6 +5,7 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
+// axios.defaults.baseURL='http://127.0.0.1:8090/';
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)  //注册ElementUI
@@ -48,7 +49,13 @@ Vue.filter('currency',(val)=>{
   //把int转换为xx.yy
   return '￥'+ val.toFixed(2);
 })
-
+//座位状态转换
+Vue.filter('tableStatus',(val)=>{
+  if(val==1) return '空闲';
+  if(val==2) return '预定';
+  if(val==3) return '占用';
+  else return '其他';
+})
 
 new Vue({
   router,

@@ -1,15 +1,25 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-      <div>{{33.444 | currency}}</div>
-      <div>{{1548311700000 | date}}</div>
-    </div>
     <router-view/>
   </div>
 </template>
-
+<script>
+export default {
+   mounted(){
+       this.axios.get(this.$store.state.globalSettings.apiUrl+'/admin/settings')
+       .then(res=>{
+           console.log(res)
+           this.$store.commit('setGlobalSettings',res.data.apiUrl)
+       }) 
+       .catch(err=>{
+           console.log(err)
+       })
+   }
+}
+</script>
 <style lang="scss">
-
+    #app{
+      color:#303133;
+      font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    }
 </style>

@@ -1,5 +1,11 @@
 <template>
-  <div class="notFound">
-    <h1>This is an notFound page</h1>
+  <div class="o-notFound">
+    <h1>404! NOT FOUND!</h1>
   </div>
 </template>
+<style lang="scss">
+  .o-notFound{
+    text-align: center;
+    padding-top: 300px;
+  }
+</style>
