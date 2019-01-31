@@ -15,7 +15,7 @@ export default new Vuex.Store({
        state.adminName=value;
      },
      setGlobalSettings(state,value){
-       state.globalSettings.apiUrl=value;
+       state.globalSettings=value;
      }
   },
   actions: {
