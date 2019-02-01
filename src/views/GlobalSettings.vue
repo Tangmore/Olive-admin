@@ -34,7 +34,7 @@
       </el-form>  
       <div style="text-align:center">
            <el-button type='primary' @click="doSubmit">提交</el-button>
-           <el-button @click="doCancel">取消</el-button>
+           <el-button @click="doCancel" type='info' plain>取消</el-button>
       </div>
     </el-card>
     </div>
