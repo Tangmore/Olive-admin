@@ -3,46 +3,67 @@ import Router from 'vue-router'
 import Login from './views/Login.vue'
 import Main from './views/Main.vue'
 import NotFound from './views/NotFound.vue'
-import GlobalSettings from './views/GlobalSettings.vue'
-import TableList from './views/TableList.vue'
-import TableAdd from './views/TableAdd.vue'
-import TableDelete from './views/TableDelete.vue'
-import CategoryList from './views/CategoryList.vue'
-import CategoryAdd from './views/CategoryAdd.vue'
-import CategoryDelete from './views/CategoryDelete.vue'
-import CategoryUpdate from './views/CategoryUpdate.vue'
-import DishList from './views/DishList.vue'
-import DishAdd from './views/DishAdd.vue'
-import DishDelete from './views/DishDelete.vue'
-import DishUpdate from './views/DishUpdate.vue'
-import OrderList from './views/OrderList.vue'
-import Security from './views/Security.vue'
+// 用户
+import UserList from './views/UserList.vue'
+import UserAdd from './views/UserAdd.vue'
+import UserDetail from './views/UserDetail.vue'
+
+// 电影信息
+import movieList from './views/movieList.vue'
+import movieAdd from './views/movieAdd.vue'
+import movieDetail from './views/movieDetail.vue'
+
+// 电影类型
+import typeList from './views/typeList.vue'
+import typeAdd from './views/typeAdd.vue'
+
+// 影院
+import cinemaList from './views/cinemaList.vue'
+import cinemaAdd from './views/cinemaAdd.vue'
+
+//评论
+import commentList from './views/commentList.vue'
+import commentDetail from './views/commentDetail.vue'
+
+//订单管理
+import orderList from './views/orderList.vue'
+import orderDetail from './views/orderDetail.vue'
+
+//管理员
+import admin from './views/admin.vue'
 
 Vue.use(Router)
-//整个项目的路由词典：访问路径 <=> 视图组件
+//路由词典
 export default new Router({
   routes: [
-    { path: '/', redirect: '/login' },
+    { path: '/', redirect: '/main' },
     { path: '/login', component: Login },
     { 
       path: '/main', 
       component: Main,
       children: [
-        {path:'',redirect:'/table/list'},        
-        {path:'/settings',component:GlobalSettings},
-        {path:'/table/list',component:TableList},
-        {path:'/table/add',component:TableAdd},
-        {path:'/table/delete',component:TableDelete},
-        {path:'/category/list',component:CategoryList},
-        {path:'/category/add',component:CategoryAdd},
-        {path:'/category/delete',component:CategoryDelete},
-        {path:'/category/update',component:CategoryUpdate},
-        {path:'/dish/list',component:DishList},
-        {path:'/dish/add',component:DishAdd},
-        {path:'/dish/delete',component:DishDelete},
-        {path:'/dish/update',component:DishUpdate},
-        {path:'/orderList',component:OrderList},
-        {path:'/security',component:Security},
+        {path:'',redirect:'/user/list'},        
+        {path:'/user/list',component:UserList},
+        {path:'/user/add',component:UserAdd},
+        {path:'/user/detail',component:UserDetail},
+
+        {path:'/movie/list',component:movieList},
+        {path:'/movie/add',component:movieAdd},
+        {path:'/movie/detail',component:movieDetail},
+
+        {path:'/type/list',component:typeList},
+        {path:'/type/add',component:typeAdd},
+
+        {path:'/cinema/list',component:cinemaList},
+        {path:'/cinema/add',component:cinemaAdd},
+
+        {path:'/comment/list',component:commentList},
+        {path:'/comment/detail',component:commentDetail},
+
+        {path:'/orders/list',component:orderList},
+        {path:'/orders/detail',component:orderDetail},
+
+        {path:'/admin',component:admin}
       ]
     },
     { path: '*', component: NotFound },

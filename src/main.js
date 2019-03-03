@@ -7,7 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 // axios.defaults.baseURL='http://127.0.0.1:8090/';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 Vue.use(ElementUI)  //注册ElementUI
 Vue.prototype.axios=axios;
 
