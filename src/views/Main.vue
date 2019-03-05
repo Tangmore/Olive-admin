@@ -102,11 +102,23 @@
     },
     computed: {
       defaultOpeneds() {
-        if (this.$route.path.indexOf('/table') == 0) {
-          return ['table'];
+        if (this.$route.path.indexOf('/user') == 0) {
+          return ['user'];
         }
-        if (this.$route.path.indexOf('/dish') == 0) {
-          return ['dish'];
+        if (this.$route.path.indexOf('/movie') == 0) {
+          return ['movie'];
+        }
+        if (this.$route.path.indexOf('/type') == 0) {
+          return ['type'];
+        }
+        if (this.$route.path.indexOf('/cinema') == 0) {
+          return ['cinema'];
+        }
+        if (this.$route.path.indexOf('/comment') == 0) {
+          return ['comment'];
+        }
+        if (this.$route.path.indexOf('/order') == 0) {
+          return ['order'];
         }
         return [];
       },
@@ -135,14 +147,12 @@
           width: 200px !important;
         }
       }
-
       /*平板电脑与小屏电脑之间的分辨率*/
-      @media screen and (min-width: 768px) and (max-width:979px) {
+      @media screen and (min-width: 768px) and (max-width:1200px) {
         .el-aside {
           width: 200px !important;
         }
       }
-
       /*横向放置的手机和竖向放置的平板之间的分辨率*/
       @media screen and (max-width:767px) {
         .el-aside {

@@ -39,15 +39,15 @@ export default {
         "username":this.formData.username,
         "password":this.formData.password
       }
-       this.axios.post( this.$store.state.globalSettings.apiUrl+'admin/login/',formData)
-            .then(res=>{
-                if(!this.formData.username || !this.formData.password){
+       if(!this.formData.username || !this.formData.password){
                     this.$message({
                       message: '用户名和密码不能为空',
                       type: 'warning'
                     });
                     return;
                 }
+       this.axios.post( this.$store.state.globalSettings.apiUrl+'admin/login/',formData)
+            .then(res=>{
                 console.log(res);
                 if(res.status==200){
                   if(res.data.rtnCode==200){
