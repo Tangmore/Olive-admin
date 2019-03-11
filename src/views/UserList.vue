@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="userEditmain">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator='/'>
       <el-breadcrumb-item :to="{path:'/main'}">用户</el-breadcrumb-item>
@@ -22,14 +22,12 @@
       </el-table-column>
       <el-table-column label='手机号' prop='phone'>
       </el-table-column>
-      <el-table-column label='密码' prop='password'>
-      </el-table-column>
       <el-table-column label='爱好' prop='hobby'>
       </el-table-column>
       <el-table-column fixed="right" label="操作">
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
-            <span @click="UserInfoDetail(row,$index)" class='copBtn'>详情</span>
+          <span @click="UserInfoDetail(row,$index)" class='copBtn'>详情</span>
           <span @click="updateUserInfo(row,$index)" class='copBtn'>编辑</span>
           <span @click="deleteUser(row,$index)" class='copBtn'>删除</span>
 
@@ -45,14 +43,18 @@
     </div>
 
     <!-- 用户详情模态框 -->
-    <div class="userInfoModal" v-show=''>
+    <userInfoModal class="userInfoModal" v-show='isuserInfoModal' :userDetail='thisuserDetail' @tellShow='changeInfoShow' />
 
-    </div>
+    <!-- 用户信息编辑模态框 -->
+    <UserInfoEdit class="UserInfoEdit" v-show='isuserInfoEdit' :userDetail='thisuserDetail' @tellEditShow='changeEditShow' />
+
   </div>
 
   </div>
 </template>
 <script>
+  import userInfoModal from '../components/user-admin/userInfoModel.vue'
+  import UserInfoEdit from '../components/user-admin/UserInfoEdit.vue'
   export default {
     data() {
       return {
@@ -69,8 +71,16 @@
         currentPage: 1,
         // 总条数
         infoLength: 0,
-        userInfoModal:true
+        // 用户详情
+        isuserInfoModal: false,
+        thisuserDetail: {},
+        // 用户信息编辑
+        isuserInfoEdit: false
       }
+    },
+    components: {
+      userInfoModal,
+      UserInfoEdit
     },
     mounted() {
       this.infoInit();
@@ -97,22 +107,49 @@
             console.log(err)
           })
       },
-      //更新用户信息
+      //编辑用户信息
       updateUserInfo(c, index) {
-        this.$router.push('/user/edit/' + c.id);
+      
+        if (this.isuserInfoModal) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        }  
+        this.isuserInfoEdit = true;
       },
       // 获取当前用户信息
-      UserInfoDetail(c, index){
-        let userinfoDetail='';
-        this.$alert('<strong>这是 <i>HTML</i> 片段</strong>', '用户详情', {
-          dangerouslyUseHTMLString: true
-        });
+      UserInfoDetail(c, index) {
+        if (this.isuserInfoEdit) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        } 
+        this.isuserInfoModal = true;
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'user/getById?id=' + c.id)
+          .then(res => {
+            // console.log(res);
+            if (res.status == 200) {
+              if (res.data.rtnCode == 200) {
+                this.thisuserDetail = res.data.data;
+              }
+            } else {
+              this.$message.error('服务器内部错误！');
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+
       },
       //删除当前行用户
       deleteUser(c, index) {
         this.$confirm('删除操作不可撤销，您确定吗？', '提示', {
-            type: 'warning'
-          })
+          type: 'warning'
+        })
           .then(() => {
             var url = this.$store.state.globalSettings.apiUrl + 'user/delete/?id=' + c.id;
             this.axios.get(url)
@@ -150,7 +187,16 @@
         this.currentPage = val;
         this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
           this.pageSize, this.currentPage * this.pageSize);
+      },
+      // 子传父isshow---个人详情弹出框
+      changeInfoShow(flag) {
+        this.isuserInfoModal = flag;
+      },
+      // 子传父isshow---个人详情编辑弹出框
+      changeEditShow(flag) {
+        this.isuserInfoEdit = flag;
       }
+
     }
   }
 </script>
@@ -161,7 +207,8 @@
     font-size: 14px;
   }
 
-  .el-table,.el-pagination {
+  .el-table,
+  .el-pagination {
     margin-top: 10px;
   }
 
@@ -172,6 +219,7 @@
   }
 
   /*大屏幕*/
+
   @media screen and (min-width: 1200px) {
     .searchBtn {
       width: 260px;
@@ -179,6 +227,7 @@
   }
 
   /*平板电脑与小屏电脑之间的分辨率*/
+
   @media screen and (min-width: 768px) and (max-width:1200px) {
     .searchBtn {
       width: 240px;
@@ -186,6 +235,7 @@
   }
 
   /*横向放置的手机和竖向放置的平板之间的分辨率*/
+
   @media screen and (max-width:767px) {
     .searchBtn {
       width: 250px;
@@ -193,9 +243,33 @@
   }
 
   /*竖向放置的手机以及分别率*/
+
   @media screen and (max-width: 480px) {
     .searchBtn {
       width: 220px;
     }
+  }
+
+  /*用户详情弹出框*/
+
+  .userInfoModal {
+    width: 400px;
+    height: 440px;
+  }
+
+  .UserInfoEdit {
+    width: 600px;
+    height: 620px;
+  }
+
+  /* 弹出框*/
+
+  .userInfoModal,
+  .UserInfoEdit {
+    position: absolute;
+    z-index: 99;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 </style>
