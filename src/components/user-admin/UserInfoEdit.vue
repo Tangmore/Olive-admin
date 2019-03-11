@@ -9,14 +9,19 @@
         <!-- 修改表单 -->
         <div class='editBox' style='width:80%'>
           <el-form :label-position="labelPosition" label-width="90px">
+            
             <el-form-item label="用户头像：">
-              <el-upload class="img-uploader" :action="uploadAction" :show-file-list='true' :before-upload='beforeImgUpload' :before-remove='beforeRemove'
+              <el-upload class="img-uploader" :action="uploadAction" 
+              :show-file-list='true' 
+              :before-upload='beforeImgUpload' 
+              :before-remove='beforeRemove'
                 :on-success='handleSuccess' name='avatarImg'>
                 <img v-if="imageUrl" :src="imageUrl" class="img">
                 <i v-else class="el-icon-plus img-uploader-icon"></i>
                 <div slot="tip" class="el-upload__tip">只能上传gif/jpg/jpeg/png,且不能超过500kb</div>
               </el-upload>
             </el-form-item>
+
             <el-form-item label="用户名：">
               <el-input type="text" placeholder="请输入用户名" v-model="userInfo.name"></el-input>
             </el-form-item>
@@ -151,16 +156,16 @@
         border-color: #409EFF;
       }
       .img {
-        width: 178px;
-        height: 178px;
+        width: 170px;
+        height: 170px;
         display: block;
       }
       .img-uploader-icon {
         font-size: 28px;
         color: #8c939d;
-        width: 178px;
-        height: 178px;
-        line-height: 178px;
+        width: 170px;
+        height: 170px;
+        line-height: 170px;
         text-align: center;
       }
 
