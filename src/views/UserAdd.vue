@@ -8,7 +8,7 @@
        </el-breadcrumb>
     
     <!-- 修改表单 -->
-    <div class='editBox' style='width:80%'>
+    <div class='editBox' style='width:80%;margin-top: 30px;'>
      <el-form :label-position="labelPosition" label-width="90px">
              <el-form-item  label="昵称：">
                    <el-input type="text" placeholder="请输入昵称" v-model="userInfo.name" ></el-input>
@@ -41,123 +41,54 @@ export default {
         phone:'',
         password:'',  
         name:'',
-        img:'',//图片在服务器上的随机文件名
         hobby:''
       },
-      originUserInfo:[],
-      labelPosition:'right',
-      uploadAction:this.$store.state.globalSettings.apiUrl+'admin/dish/image',
-      imageUrl:''
+      originUserInfo:{},
+      labelPosition:'right'
     }
   },
   methods: {
-    // 验证上传图片的格式
-    beforeImgUpload(file){
-      console.log(file)
-        var suffix=file.name.substring(file.name.lastIndexOf('.'));
-        var isCorr=/\.(jpg|jpeg|png|gif)/.test(suffix);
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isCorr) {
-          this.$message.error('上传图片格式只能是gif、jpg、jpeg、png!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传图片大小不能超过 2MB!');
-        }
-        return isCorr && isLt2M;
-    },
-    // 移除图片
-    beforeRemove(file){
-       this.$confirm(`确定移除${file.name}`,'提示',{type:'warning'})
-       .then(()=>{
-         this.imageUrl='';
-         this.$message.success('图片删除成功，可重新选择！');
-       })
-       .catch(()=>{
-         this.$message.info('已经取消删除');
-       })
-    },
-    //上传成功后 客户端得到响应消息
-    handleSuccess(res,file){
-         this.formData.imgUrl=res.fileName;
-         //把上传的图片编码为DataURL字符串
-         this.imageUrl=URL.createObjectURL(file.raw);
-    },
- 
-    handleRadioChange(value){
-      console.log(value)
-    },
-    //提交修改
+  //确认添加
     doSubmit(){
-       this.$confirm('确认修改该用户信息名字？','提示',{type:'warning'})
+       this.$confirm('确认添加该用户？','提示',{type:'warning'})
       .then(()=>{
-           var url=this.$store.state.globalSettings.apiUrl+'user/edit';
+           var url=this.$store.state.globalSettings.apiUrl+'user/add';
            this.axios.post(url,this.userInfo)
               .then(res=>{
                 if(res.status==200){
                   if(res.data.rtnCode==200){
-                   
-                    this.$message.success('用户信息修改成功！');
+                    this.$message.success(res.data.msg);
+                    this.userInfo={};
                   }
                 }else{
                   this.$message.error('服务器内部错误！');
                 }
+                // console.log(res)
               })
               .catch(err=>{
-                  this.$message.error('用户信息修改失败');
+                  this.$message.error('用户信息添加失败');
               })  
       }).catch(()=>{
         this.$message({
            type:'info',
-           message:'已取消对该用户信息的修改！'
+           message:'已取消添加用户！'
         })
       })
        
       
     },
     doCancel(){
-      this.formData={}
+      this.userInfo={}
     },
   },
     mounted() {
-      this.axios.get(this.$store.state.globalSettings.apiUrl+'user/getById')
-      .then(res=>{
-          this.originUserInfo=res.data;
-          console.log(res.data)
-      })
-      .catch(err=>{
-          console.log(err)   
-       })
+     
   
     }
   
 }
 </script>
 <style lang="scss" >
-   .img-uploader {
-     .el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      &:hover{
-        border-color: #409EFF;
-      }  
-      .img{
-        width: 178px;
-        height: 178px;
-        display: block;
-      }
-      .img-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        width: 178px;
-        height: 178px;
-        line-height: 178px;
-        text-align: center;
-      } 
-     
-    }
-   }
+   
 
 </style>

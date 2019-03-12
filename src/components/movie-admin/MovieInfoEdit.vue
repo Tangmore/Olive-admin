@@ -1,5 +1,5 @@
 <template>
-  <div class="userdetail">
+  <div class="moviedetail">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>用户信息编辑</span>
@@ -46,9 +46,9 @@
         info: {
           infoList: { name: '', phone: '', img: '', hobby: '' },
         },
-        originUserInfo: [],
+        originmovieInfo: [],
         labelPosition: 'right',
-        // uploadAction: this.$store.state.globalSettings.apiUrl + 'user/edit',
+        // uploadAction: this.$store.state.globalSettings.apiUrl + 'movie/edit',
         imageUrl: ''
       }
     },
@@ -63,7 +63,7 @@
           'Content-Type': 'multipart/form-data'
         }
         let var_this = this;
-        this.axios.post('user/edit', formData, config)
+        this.axios.post('movie/edit', formData, config)
           .then(function (res) {
             // if (res.data.rtnCode!=200) {
             //     var_this.$message({
@@ -116,7 +116,7 @@
       doSubmit() {
         this.$confirm('确认修改该用户信息名字？', '提示', { type: 'warning' })
           .then(() => {
-            var url = this.$store.state.globalSettings.apiUrl + 'user/edit';
+            var url = this.$store.state.globalSettings.apiUrl + 'movie/edit';
             this.axios.post(url, this.info.infoList)
               .then(res => {
                 if (res.status == 200) {
@@ -145,9 +145,8 @@
       }
     },
     mounted() {
-      this.axios.get(this.$store.state.globalSettings.apiUrl + 'user/getById?id=' + this.id)
+      this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getById?id=' + this.id)
         .then(res => {
-
           let data = res.data.data;
           for(let i in data){
             if(data[i]==null){

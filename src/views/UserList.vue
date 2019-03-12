@@ -46,7 +46,7 @@
     <userInfoModal class="userInfoModal" v-show='isuserInfoModal' :userDetail='thisuserDetail' @tellShow='changeInfoShow' />
 
     <!-- 用户信息编辑模态框 -->
-    <UserInfoEdit class="UserInfoEdit" v-show='isuserInfoEdit' :userDetail='thisuserDetail' @tellEditShow='changeEditShow' />
+    <UserInfoEdit class="UserInfoEdit" v-if='isuserInfoEdit' :id='thisuserID' @tellEditShow='changeEditShow' />
 
   </div>
 
@@ -75,7 +75,8 @@
         isuserInfoModal: false,
         thisuserDetail: {},
         // 用户信息编辑
-        isuserInfoEdit: false
+        isuserInfoEdit: false,
+        thisuserID:""
       }
     },
     components: {
@@ -109,7 +110,6 @@
       },
       //编辑用户信息
       updateUserInfo(c, index) {
-      
         if (this.isuserInfoModal) {
           this.$message({
             message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
@@ -118,6 +118,7 @@
           return;
         }  
         this.isuserInfoEdit = true;
+        this.thisuserID=c.id;
       },
       // 获取当前用户信息
       UserInfoDetail(c, index) {
@@ -176,7 +177,24 @@
 
       //按用户名查找用户
       usernameSearch() {
-
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'user/getList?name='+this.searchContnt)
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              if (res.data.rtnCode == 200) {
+                this.infoAll = res.data.data;
+                this.infoLength = this.infoAll.length;
+                this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
+                  this.pageSize, this.currentPage * this.pageSize);
+                this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
+              }
+            } else {
+              this.$message.error('服务器内部错误！');
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       },
       handleSizeChange(val) {
         // console.log(`每页 ${val} 条`);

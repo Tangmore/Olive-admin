@@ -12,7 +12,7 @@ import UserAdd from './views/UserAdd.vue'
 // 电影信息
 import movieList from './views/movieList.vue'
 import movieAdd from './views/movieAdd.vue'
-import movieDetail from './views/movieDetail.vue'
+// import movieDetail from './views/movieDetail.vue'
 
 // 电影类型
 import typeList from './views/typeList.vue'
@@ -30,8 +30,8 @@ import commentDetail from './views/commentDetail.vue'
 import orderList from './views/orderList.vue'
 import orderDetail from './views/orderDetail.vue'
 
-//管理员
-import admin from './views/admin.vue'
+// //管理员
+// import admin from './views/admin.vue'
 
 Vue.use(Router)
 //路由词典
@@ -51,7 +51,7 @@ export default new Router({
       
         {path:'/movie/list',component:movieList},
         {path:'/movie/add',component:movieAdd},
-        {path:'/movie/detail',component:movieDetail},
+        // {path:'/movie/detail',component:movieDetail},
 
         {path:'/type/list',component:typeList},
         {path:'/type/add',component:typeAdd},
@@ -63,9 +63,9 @@ export default new Router({
         {path:'/comment/detail',component:commentDetail},
 
         {path:'/orders/list',component:orderList},
-        {path:'/orders/detail',component:orderDetail},
+        {path:'/orders/detail',component:orderDetail}
 
-        {path:'/admin',component:admin}
+        // {path:'/admin',component:admin}
       ]
     },
     { path: '*', component: NotFound },

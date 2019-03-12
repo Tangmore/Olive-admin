@@ -1,8 +1,312 @@
 <template>
-  <div class="main">
-    <h1>This is an categorydelete page</h1>
-    
+  <div class="movieEditmain">
+    <!-- 面包屑导航 -->
+    <el-breadcrumb separator='/'>
+      <el-breadcrumb-item :to="{path:'/main'}">电影</el-breadcrumb-item>
+      <el-breadcrumb-item>电影信息</el-breadcrumb-item>
+      <el-breadcrumb-item>电影列表</el-breadcrumb-item>
+    </el-breadcrumb>
+    <!-- 条件查询 -->
+    <div class="searchBtn">
+      <el-input placeholder="请输入电影名" v-model="searchContnt" size="small" clearable>
+        <el-button slot="append" size="small" @click='movieSearch'>搜索</el-button>
+      </el-input>
     </div>
+    <!-- 电影列表 -->
+    <el-table :data='currentPageData' style="width:100%" stripe border>
+      <el-table-column label='id' prop='id' sortable>
+      </el-table-column>
+      <el-table-column label='电影名' prop='name' >
+      </el-table-column>
+      <el-table-column label='电影类型·' prop='typename'>
+      </el-table-column>
+      <el-table-column label='上映影院' prop='cinemaname'>
+      </el-table-column>
+      <el-table-column label='主演' prop='starring'>
+      </el-table-column>
+      <el-table-column label='影片图片' prop='img'>
+      </el-table-column>
+      <el-table-column label='评分' prop='praise' sortable>
+      </el-table-column>
+      <el-table-column label='价格' prop='price' sortable>
+      </el-table-column>
+      <el-table-column label='上映时间' prop='start_time'
+      :formatter="dateFormat" sortable>
+      </el-table-column> 
+       <el-table-column label='下架时间' prop='end_time'
+       :formatter="dateFormat" sortable>
+      </el-table-column>
+      <el-table-column fixed="right" label="操作">
+        <!-- 插槽作用域的解构  -->
+        <template slot-scope="{row,$index}">
+          <span @click="MovieInfoDetail(row,$index)" class='copBtn'>详情</span>
+          <span @click="updateMovieInfo(row,$index)" class='copBtn'>编辑</span>
+          <span @click="deleteMovie(row,$index)" class='copBtn'>删除</span>
+
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 电影列表分页显示 -->
+    <div class="block">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+        :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="infoLength">
+      </el-pagination>
+    </div>
+
+    <!-- 电影详情模态框 -->
+    <MovieInfoModel class="movieInfoModal" v-show='ismovieInfoModal' :movieDetail='thismovieDetail' @tellShow='changeInfoShow' />
+
+    <!-- 电影信息编辑模态框 -->
+    <MovieInfoEdit class="movieInfoEdit" v-if='ismovieInfoEdit' :id='thismovieID' @tellEditShow='changeEditShow' />
+
+  </div>
 
   </div>
 </template>
+<script>
+  import MovieInfoModel from '../components/movie-admin/MovieInfoModel.vue'
+  import MovieInfoEdit from '../components/movie-admin/MovieInfoEdit.vue'
+  export default {
+    data() {
+      return {
+        // 当前页信息
+        currentPageData: [],
+        //所有信息
+        infoAll: [],
+        searchContnt: "",
+        // 总页数
+        totalPage: 0,
+        // 每页显示条数
+        pageSize: 6,
+        // 当前页
+        currentPage: 1,
+        // 总条数
+        infoLength: 0,
+        // 电影详情
+        ismovieInfoModal: false,
+        thismovieDetail: {},
+        // 电影信息编辑
+        ismovieInfoEdit: false,
+        thismovieID:""
+      }
+    },
+    components: {
+      MovieInfoModel,
+      MovieInfoEdit
+    },
+    mounted() {
+      this.infoInit();
+    },
+    methods: {
+
+      //电影列表初始化
+      infoInit() {
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getList')
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              if (res.data.rtnCode == 200) {
+                this.infoAll = res.data.data;
+                this.infoLength = this.infoAll.length;
+                this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
+                                      this.pageSize, this.currentPage * this.pageSize);
+                 
+                this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
+              }
+            } else {
+              this.$message.error('服务器内部错误！');
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }, 
+      // 表格时间内容格式化
+       formatNumber(n){
+          n=n.toString();
+          return n[1]?n:'0'+n;
+      },
+      dateFormat(row, column) {
+          var val = row[column.property];
+          if (val == undefined) {
+             return "";
+          }
+           var date=new Date(val);
+          var yy=date.getFullYear();
+          var mm=date.getMonth()+1;
+          var dd=date.getDay();
+          var hh=date.getHours();
+          var mi=date.getMinutes();
+          var ss=date.getSeconds();
+          var formatdate=[mm,dd].map(this.formatNumber).join('-');
+          var formattime=[hh,mi,ss].map(this.formatNumber).join(':');
+          return yy+'-'+formatdate+' '+formattime;
+        },
+
+      //编辑电影信息
+      updateMovieInfo(c, index) {
+        if (this.ismovieInfoModal) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        }  
+        this.ismovieInfoEdit = true;
+        this.thismovieID=c.id;
+      },
+      // 获取当前电影信息
+      MovieInfoDetail(c, index) {
+        if (this.ismovieInfoEdit) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        } 
+        this.ismovieInfoModal = true;
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getById?id=' + c.id)
+          .then(res => {
+            // console.log(res);
+            if (res.status == 200) {
+              if (res.data.rtnCode == 200) {
+                this.thismovieDetail = res.data.data;
+              }
+            } else {
+              this.$message.error('服务器内部错误！');
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+
+      },
+      //删除当前行电影
+      deleteMovie(c, index) {
+        this.$confirm('删除操作不可撤销，您确定吗？', '提示', {
+          type: 'warning'
+        })
+          .then(() => {
+            var url = this.$store.state.globalSettings.apiUrl + 'movie/delete/?id=' + c.id;
+            this.axios.get(url)
+              .then(res => {
+                if (res.status == 200) {
+                  if (res.data.rtnCode == 200) {
+                    this.categoryList.splice(index, 1);
+                    this.$message.success('删除电影成功！');
+                  }
+                } else {
+                  this.$message.error('服务器内部错误！');
+                }
+              })
+              .catch(err => {
+                this.$message.error('电影删除出错');
+              })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+      },
+
+      //查找电影
+      movieSearch() {
+
+      },
+      handleSizeChange(val) {
+        // console.log(`每页 ${val} 条`);
+        this.pageSize = val;
+      },
+      handleCurrentChange(val) {
+        // console.log(`当前页: ${val}`);
+        this.currentPage = val;
+        this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
+          this.pageSize, this.currentPage * this.pageSize);
+      },
+      // 子传父isshow---个人详情弹出框
+      changeInfoShow(flag) {
+        this.ismovieInfoModal = flag;
+      },
+      // 子传父isshow---个人详情编辑弹出框
+      changeEditShow(flag) {
+        this.ismovieInfoEdit = flag;
+      }
+
+    }
+  }
+</script>
+<style lang='scss'>
+  .copBtn {
+    color: #409EFF;
+    margin-right: 20px;
+    font-size: 14px;
+  }
+
+  .el-table,
+  .el-pagination {
+    margin-top: 10px;
+  }
+
+  .searchBtn {
+    float: right;
+    width: 260px;
+    margin-bottom: 10px;
+  }
+
+  /*大屏幕*/
+
+  @media screen and (min-width: 1200px) {
+    .searchBtn {
+      width: 260px;
+    }
+  }
+
+  /*平板电脑与小屏电脑之间的分辨率*/
+
+  @media screen and (min-width: 768px) and (max-width:1200px) {
+    .searchBtn {
+      width: 240px;
+    }
+  }
+
+  /*横向放置的手机和竖向放置的平板之间的分辨率*/
+
+  @media screen and (max-width:767px) {
+    .searchBtn {
+      width: 250px;
+    }
+  }
+
+  /*竖向放置的手机以及分别率*/
+
+  @media screen and (max-width: 480px) {
+    .searchBtn {
+      width: 220px;
+    }
+  }
+
+  /*电影详情弹出框*/
+
+  .movieInfoModal {
+    width: 400px;
+    height: 440px;
+  }
+
+  .movieInfoEdit {
+    width: 600px;
+    height: 620px;
+  }
+
+  /* 弹出框*/
+
+  .movieInfoModal,
+  .movieInfoEdit {
+    position: absolute;
+    z-index: 99;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>

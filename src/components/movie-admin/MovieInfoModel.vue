@@ -1,5 +1,5 @@
 <template>
-    <div class="userdetail">
+    <div class="moviedetail">
         <el-card class="box-card">
             <div slot="header" class="clearfix">
                 <span>用户详情</span>
@@ -7,16 +7,16 @@
             </div>
             <el-form :label-position="labelPosition" label-width="90px">
                 <el-form-item label="用户名：">
-                        {{userDetail.name}}
+                        {{movieDetail.name}}
                 </el-form-item> 
                 <el-form-item label="头像：">
-                        <img :src="userDetail.img?userDetail.img:''" alt="" style="width: 100px;height: 100px;vertical-align:top; ">
+                        <img :src="movieDetail.img?movieDetail.img:''" alt="" style="width: 100px;height: 100px;vertical-align:top; ">
                 </el-form-item>
                 <el-form-item label="手机号：">
-                        {{userDetail.phone}}
+                        {{movieDetail.phone}}
                 </el-form-item> 
                 <el-form-item label="爱好：">
-                        {{userDetail.hobby}}
+                        {{movieDetail.hobby}}
                 </el-form-item> 
             </el-form>
         </el-card>
@@ -29,7 +29,7 @@
                 labelPosition:'right'
             }
         },
-        props: ['userDetail'],
+        props: ['movieDetail'],
         methods: {
             changeIs() {
                 this.$emit('tellShow', false);
