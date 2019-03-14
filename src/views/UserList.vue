@@ -24,13 +24,12 @@
       </el-table-column>
       <el-table-column label='爱好' prop='hobby'>
       </el-table-column>
-      <el-table-column fixed="right" label="操作">
+      <el-table-column fixed="right" label="操作" width='120px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
           <span @click="UserInfoDetail(row,$index)" class='copBtn'>详情</span>
           <span @click="updateUserInfo(row,$index)" class='copBtn'>编辑</span>
           <span @click="deleteUser(row,$index)" class='copBtn'>删除</span>
-
         </template>
       </el-table-column>
     </el-table>
@@ -219,57 +218,8 @@
   }
 </script>
 <style lang='scss'>
-  .copBtn {
-    color: #409EFF;
-    margin-right: 20px;
-    font-size: 14px;
-  }
-
-  .el-table,
-  .el-pagination {
-    margin-top: 10px;
-  }
-
-  .searchBtn {
-    float: right;
-    width: 260px;
-    margin-bottom: 10px;
-  }
-
-  /*大屏幕*/
-
-  @media screen and (min-width: 1200px) {
-    .searchBtn {
-      width: 260px;
-    }
-  }
-
-  /*平板电脑与小屏电脑之间的分辨率*/
-
-  @media screen and (min-width: 768px) and (max-width:1200px) {
-    .searchBtn {
-      width: 240px;
-    }
-  }
-
-  /*横向放置的手机和竖向放置的平板之间的分辨率*/
-
-  @media screen and (max-width:767px) {
-    .searchBtn {
-      width: 250px;
-    }
-  }
-
-  /*竖向放置的手机以及分别率*/
-
-  @media screen and (max-width: 480px) {
-    .searchBtn {
-      width: 220px;
-    }
-  }
-
+  @import url('../assets/scss/common.scss');
   /*用户详情弹出框*/
-
   .userInfoModal {
     width: 400px;
     height: 440px;
@@ -279,9 +229,7 @@
     width: 600px;
     height: 620px;
   }
-
   /* 弹出框*/
-
   .userInfoModal,
   .UserInfoEdit {
     position: absolute;
@@ -290,4 +238,5 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
 </style>

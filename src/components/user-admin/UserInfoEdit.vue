@@ -11,12 +11,18 @@
           <el-form :label-position="labelPosition" label-width="90px">
 
             <el-form-item label="用户头像：">
-              <el-upload class="img-uploader" :action="this.$store.state.globalSettings.apiUrl" :show-file-list='true' :before-upload='beforeImgUpload'
-                :before-remove='beforeRemove' :on-success='handleSuccess' :http-request='submitUpload' name='avatarImg'>
+              <el-upload class="img-uploader" 
+              :action="uploadAction"
+              :show-file-list='true' 
+              :before-upload='beforeImgUpload'
+                :before-remove='beforeRemove' 
+                :on-success='handleSuccess' 
+                 name='avatarImg'>
                 <img v-if="imageUrl" :src="imageUrl" class="img">
                 <i v-else class="el-icon-plus img-uploader-icon"></i>
                 <div slot="tip" class="el-upload__tip">只能上传gif/jpg/jpeg/png,且不能超过500kb</div>
               </el-upload>
+              <!-- <el-input type="text" placeholder="请输入用户名" v-model="info.infoList.img"></el-input> -->
             </el-form-item>
 
             <el-form-item label="用户名：">
@@ -48,40 +54,17 @@
         },
         originUserInfo: [],
         labelPosition: 'right',
-        // uploadAction: this.$store.state.globalSettings.apiUrl + 'user/edit',
+        uploadAction: this.$store.state.globalSettings.imgUrl + 'user/avatar',
         imageUrl: ''
       }
     },
     props: ['id'],
     methods: {
-      // 自定义图片上传方式
-      submitUpload: function (content) {
-        //创建formData 利用axios传递
-        let formData = new FormData;
-        formData.append('file', content.file);
-        let config = {
-          'Content-Type': 'multipart/form-data'
-        }
-        let var_this = this;
-        this.axios.post('user/edit', formData, config)
-          .then(function (res) {
-            // if (res.data.rtnCode!=200) {
-            //     var_this.$message({
-            //         message: res.data.message,
-            //         type: 'error'
-            //     });
-            // }
-            console.log(res)
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-      },
-      // 验证上传图片的格式
-      beforeImgUpload(file) {
-        console.log(file)
-        var suffix = file.name.substring(file.name.lastIndexOf('.'));
-        var isCorr = /\.(jpg|jpeg|png|gif)/.test(suffix);
+        // 验证上传图片的格式
+    beforeImgUpload(file){
+      console.log(file)
+        var suffix=file.name.substring(file.name.lastIndexOf('.'));
+        var isCorr=/\.(jpg|jpeg|png|gif)/.test(suffix);
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isCorr) {
           this.$message.error('上传图片格式只能是gif、jpg、jpeg、png!');
@@ -90,33 +73,29 @@
           this.$message.error('上传图片大小不能超过 2MB!');
         }
         return isCorr && isLt2M;
-      },
-      // 移除图片
-      beforeRemove(file) {
-        this.$confirm(`确定移除${file.name}`, '提示', { type: 'warning' })
-          .then(() => {
-            this.imageUrl = '';
-            this.$message.success('图片删除成功，可重新选择！');
-          })
-          .catch(() => {
-            this.$message.info('已经取消删除');
-          })
-      },
-      //上传成功后 客户端得到响应消息
-      handleSuccess(res, file) {
-        this.formData.imgUrl = res.fileName;
-        //把上传的图片编码为DataURL字符串
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-
-      handleRadioChange(value) {
-        console.log(value)
-      },
+    },
+    // 移除图片
+    beforeRemove(file){
+       this.$confirm(`确定移除${file.name}`,'提示',{type:'warning'})
+       .then(()=>{
+         this.imageUrl='';
+         this.$message.success('图片删除成功，可重新选择！');
+       })
+       .catch(()=>{
+         this.$message.info('已经取消删除');
+       })
+    },
+    //上传成功后 客户端得到响应消息
+    handleSuccess(res,file){
+         this.info.infoList.img=res.fileName;
+         //把上传的图片编码为DataURL字符串
+         this.imageUrl=URL.createObjectURL(file.raw);
+    },
       //提交修改
       doSubmit() {
         this.$confirm('确认修改该用户信息名字？', '提示', { type: 'warning' })
           .then(() => {
-            var url = this.$store.state.globalSettings.apiUrl + 'user/edit';
+            var url = this.$store.state.globalSettings.apiUrl + 'user/edit?id='+this.id
             this.axios.post(url, this.info.infoList)
               .then(res => {
                 if (res.status == 200) {
@@ -145,6 +124,7 @@
       }
     },
     mounted() {
+      // 初始化当前用户信息
       this.axios.get(this.$store.state.globalSettings.apiUrl + 'user/getById?id=' + this.id)
         .then(res => {
 

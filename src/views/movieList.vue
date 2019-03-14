@@ -9,7 +9,7 @@
     <!-- 条件查询 -->
     <div class="searchBtn">
       <el-input placeholder="请输入电影名" v-model="searchContnt" size="small" clearable>
-        <el-button slot="append" size="small" @click='movieSearch'>搜索</el-button>
+        <el-button slot="append" size="small" @click='movienameSearch'>搜索</el-button>
       </el-input>
     </div>
     <!-- 电影列表 -->
@@ -36,7 +36,7 @@
        <el-table-column label='下架时间' prop='end_time'
        :formatter="dateFormat" sortable>
       </el-table-column>
-      <el-table-column fixed="right" label="操作">
+      <el-table-column  fixed="right" label="操作" width='100px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
           <span @click="MovieInfoDetail(row,$index)" class='copBtn'>详情</span>
@@ -211,9 +211,27 @@
           })
       },
 
-      //查找电影
-      movieSearch() {
-
+      //根据电影名查找电影
+      movienameSearch() {
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getList?name='+this.searchContnt)
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              if (res.data.rtnCode == 200) {
+                this.infoAll = res.data.data;
+                this.infoLength = this.infoAll.length;
+                this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
+                                      this.pageSize, this.currentPage * this.pageSize);
+                 
+                this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
+              }
+            } else {
+              this.$message.error('服务器内部错误！');
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       },
       handleSizeChange(val) {
         // console.log(`每页 ${val} 条`);
@@ -238,57 +256,8 @@
   }
 </script>
 <style lang='scss'>
-  .copBtn {
-    color: #409EFF;
-    margin-right: 20px;
-    font-size: 14px;
-  }
-
-  .el-table,
-  .el-pagination {
-    margin-top: 10px;
-  }
-
-  .searchBtn {
-    float: right;
-    width: 260px;
-    margin-bottom: 10px;
-  }
-
-  /*大屏幕*/
-
-  @media screen and (min-width: 1200px) {
-    .searchBtn {
-      width: 260px;
-    }
-  }
-
-  /*平板电脑与小屏电脑之间的分辨率*/
-
-  @media screen and (min-width: 768px) and (max-width:1200px) {
-    .searchBtn {
-      width: 240px;
-    }
-  }
-
-  /*横向放置的手机和竖向放置的平板之间的分辨率*/
-
-  @media screen and (max-width:767px) {
-    .searchBtn {
-      width: 250px;
-    }
-  }
-
-  /*竖向放置的手机以及分别率*/
-
-  @media screen and (max-width: 480px) {
-    .searchBtn {
-      width: 220px;
-    }
-  }
-
+ @import url('../assets/scss/common.scss');
   /*电影详情弹出框*/
-
   .movieInfoModal {
     width: 400px;
     height: 440px;
@@ -300,7 +269,6 @@
   }
 
   /* 弹出框*/
-
   .movieInfoModal,
   .movieInfoEdit {
     position: absolute;
