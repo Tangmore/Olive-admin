@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column label='爱好' prop='hobby'>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width='120px'>
+      <el-table-column fixed="right" label="操作" width='150px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
           <span @click="UserInfoDetail(row,$index)" class='copBtn'>详情</span>
@@ -75,14 +75,18 @@
         thisuserDetail: {},
         // 用户信息编辑
         isuserInfoEdit: false,
-        thisuserID:""
+        thisuserID: ""
       }
     },
+
     components: {
       userInfoModal,
       UserInfoEdit
     },
     mounted() {
+      this.$bus.$on('changeInfo', () => {
+        this.infoInit();
+      })
       this.infoInit();
     },
     methods: {
@@ -90,14 +94,11 @@
       infoInit() {
         this.axios.get(this.$store.state.globalSettings.apiUrl + 'user/getList')
           .then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status == 200) {
               if (res.data.rtnCode == 200) {
                 this.infoAll = res.data.data;
-                this.infoLength = this.infoAll.length;
-                this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
-                  this.pageSize, this.currentPage * this.pageSize);
-                this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
+                this.dividePage();
               }
             } else {
               this.$message.error('服务器内部错误！');
@@ -115,9 +116,9 @@
             type: 'warning'
           });
           return;
-        }  
+        }
         this.isuserInfoEdit = true;
-        this.thisuserID=c.id;
+        this.thisuserID = c.id;
       },
       // 获取当前用户信息
       UserInfoDetail(c, index) {
@@ -127,7 +128,7 @@
             type: 'warning'
           });
           return;
-        } 
+        }
         this.isuserInfoModal = true;
         this.axios.get(this.$store.state.globalSettings.apiUrl + 'user/getById?id=' + c.id)
           .then(res => {
@@ -147,24 +148,18 @@
       },
       //删除当前行用户
       deleteUser(c, index) {
-        this.$confirm('删除操作不可撤销，您确定吗？', '提示', {
-          type: 'warning'
-        })
+        this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
           .then(() => {
-            var url = this.$store.state.globalSettings.apiUrl + 'user/delete/?id=' + c.id;
+            var that = this;
+            var url = this.$store.state.globalSettings.apiUrl + 'user/delete?id=' + c.id;
             this.axios.get(url)
               .then(res => {
-                if (res.status == 200) {
-                  if (res.data.rtnCode == 200) {
-                    this.categoryList.splice(index, 1);
-                    this.$message.success('删除用户成功！');
-                  }
-                } else {
-                  this.$message.error('服务器内部错误！');
-                }
+                that.infoAll.splice(index, 1);
+                this.$message.success(res.data.msg);
+                this.infoInit();
               })
               .catch(err => {
-                this.$message.error('用户删除出错');
+                this.$message.error('删除用户失败！')
               })
           }).catch(() => {
             this.$message({
@@ -176,16 +171,13 @@
 
       //按用户名查找用户
       usernameSearch() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'user/getList?name='+this.searchContnt)
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'user/getList?name=' + this.searchContnt)
           .then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status == 200) {
               if (res.data.rtnCode == 200) {
                 this.infoAll = res.data.data;
-                this.infoLength = this.infoAll.length;
-                this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
-                  this.pageSize, this.currentPage * this.pageSize);
-                this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
+                this.dividePage();
               }
             } else {
               this.$message.error('服务器内部错误！');
@@ -194,6 +186,13 @@
           .catch(err => {
             console.log(err)
           })
+      },
+      //分页
+      dividePage() {
+        this.infoLength = this.infoAll.length;
+        this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
+          this.pageSize, this.currentPage * this.pageSize);
+        this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
       },
       handleSizeChange(val) {
         // console.log(`每页 ${val} 条`);
@@ -220,16 +219,19 @@
 <style lang='scss'>
   @import url('../assets/scss/common.scss');
   /*用户详情弹出框*/
+
   .userInfoModal {
     width: 400px;
-    height: 440px;
+    height: auto;
   }
 
   .UserInfoEdit {
     width: 600px;
-    height: 620px;
+    height: auto;
   }
+
   /* 弹出框*/
+
   .userInfoModal,
   .UserInfoEdit {
     position: absolute;
@@ -238,5 +240,4 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-
 </style>

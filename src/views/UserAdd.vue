@@ -74,18 +74,11 @@ export default {
            message:'已取消添加用户！'
         })
       })
-       
-      
     },
     doCancel(){
       this.userInfo={}
-    },
-  },
-    mounted() {
-     
-  
     }
-  
+  }
 }
 </script>
 <style lang="scss" >

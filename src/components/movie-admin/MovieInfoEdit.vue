@@ -162,7 +162,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" >
   .img-uploader {
     .el-upload {
       border: 1px dashed #d9d9d9;

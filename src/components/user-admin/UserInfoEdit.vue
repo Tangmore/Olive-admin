@@ -11,20 +11,13 @@
           <el-form :label-position="labelPosition" label-width="90px">
 
             <el-form-item label="用户头像：">
-              <el-upload class="img-uploader" 
-              :action="uploadAction"
-              :show-file-list='true' 
-              :before-upload='beforeImgUpload'
-                :before-remove='beforeRemove' 
-                :on-success='handleSuccess' 
-                 name='avatarImg'>
+              <el-upload class="img-uploader" :action="uploadAction" :show-file-list='true' :before-upload='beforeImgUpload' :before-remove='beforeRemove'
+                :on-success='handleSuccess' name='avatarImg' :limit='1'>
                 <img v-if="imageUrl" :src="imageUrl" class="img">
                 <i v-else class="el-icon-plus img-uploader-icon"></i>
                 <div slot="tip" class="el-upload__tip">只能上传gif/jpg/jpeg/png,且不能超过500kb</div>
               </el-upload>
-              <!-- <el-input type="text" placeholder="请输入用户名" v-model="info.infoList.img"></el-input> -->
             </el-form-item>
-
             <el-form-item label="用户名：">
               <el-input type="text" placeholder="请输入用户名" v-model="info.infoList.name"></el-input>
             </el-form-item>
@@ -55,16 +48,17 @@
         originUserInfo: [],
         labelPosition: 'right',
         uploadAction: this.$store.state.globalSettings.imgUrl + 'user/avatar',
-        imageUrl: ''
+        imageUrl: '',
+        basePath: ""
       }
     },
     props: ['id'],
     methods: {
-        // 验证上传图片的格式
-    beforeImgUpload(file){
-      console.log(file)
-        var suffix=file.name.substring(file.name.lastIndexOf('.'));
-        var isCorr=/\.(jpg|jpeg|png|gif)/.test(suffix);
+      // 验证上传图片的格式
+      beforeImgUpload(file) {
+        // console.log(file)
+        var suffix = file.name.substring(file.name.lastIndexOf('.'));
+        var isCorr = /\.(jpg|jpeg|png|gif)/.test(suffix);
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isCorr) {
           this.$message.error('上传图片格式只能是gif、jpg、jpeg、png!');
@@ -73,49 +67,65 @@
           this.$message.error('上传图片大小不能超过 2MB!');
         }
         return isCorr && isLt2M;
-    },
-    // 移除图片
-    beforeRemove(file){
-       this.$confirm(`确定移除${file.name}`,'提示',{type:'warning'})
-       .then(()=>{
-         this.imageUrl='';
-         this.$message.success('图片删除成功，可重新选择！');
-       })
-       .catch(()=>{
-         this.$message.info('已经取消删除');
-       })
-    },
-    //上传成功后 客户端得到响应消息
-    handleSuccess(res,file){
-         this.info.infoList.img=res.fileName;
-         //把上传的图片编码为DataURL字符串
-         this.imageUrl=URL.createObjectURL(file.raw);
-    },
+      },
+      // 移除图片
+      beforeRemove(file) {
+        this.$confirm(`确定移除${file.name}`, '提示', { type: 'warning' })
+          .then(() => {
+            this.imageUrl = '';
+            this.$message.success('图片删除成功，可重新选择！');
+          })
+          .catch(() => {
+            this.$message.info('已经取消删除');
+          })
+      },
+      //上传成功后 客户端得到响应消息
+      handleSuccess(res, file) {
+        this.basePath = res.fileName;
+        this.info.infoList.img = res.fileName;
+        //把上传的图片编码为DataURL字符串
+        //  this.imageUrl=URL.createObjectURL(file.raw);
+        this.imageUrl = this.$store.state.globalSettings.imgUrl + res.fileName;
+      },
       //提交修改
       doSubmit() {
-        this.$confirm('确认修改该用户信息名字？', '提示', { type: 'warning' })
-          .then(() => {
-            var url = this.$store.state.globalSettings.apiUrl + 'user/edit?id='+this.id
-            this.axios.post(url, this.info.infoList)
-              .then(res => {
-                if (res.status == 200) {
-                  if (res.data.rtnCode == 200) {
+        // this.$confirm('确认修改该用户信息名字？', '提示', { type: 'warning' })
+        //   .then(() => {
+        //     var url = this.$store.state.globalSettings.apiUrl + 'user/edit?id=' + this.id
+        //     this.axios.post(url, this.info.infoList)
+        //       .then(res => {
+        //         if (res.status == 200) {
+        //           if (res.data.rtnCode == 200) {
 
-                    this.$message.success('用户信息修改成功！');
-                  }
-                } else {
-                  this.$message.error('服务器内部错误！');
-                }
+        //             this.$message.success('用户信息修改成功！');
+        //             this.changeIs();
+        //             window.reload();
+        //           }
+        //         } else {
+        //           this.$message.error('服务器内部错误！');
+        //         }
+        //       })
+        //       .catch(err => {
+        //         this.$message.error('用户信息修改失败');
+        //       })
+        //   }).catch(() => {
+        //     this.$message({
+        //       type: 'info',
+        //       message: '已取消对该用户信息的修改！'
+        //     })
+        //   })
+
+        var that=this;
+        var url = this.$store.state.globalSettings.apiUrl + 'user/edit?id=' + this.id;
+           this.axios.post(url,this.info.infoList)
+              .then(res=>{
+                this.$message.success('用户信息修改成功！');
+                    this.changeIs();
+                    this.$bus.$emit('changeInfo');
               })
-              .catch(err => {
-                this.$message.error('用户信息修改失败');
-              })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消对该用户信息的修改！'
-            })
-          })
+              .catch(err=>{
+                  this.$message.error('编辑用户失败！')
+              })  
       },
       // 子传父----关闭弹出框
       changeIs() {
@@ -129,12 +139,16 @@
         .then(res => {
 
           let data = res.data.data;
-          for(let i in data){
-            if(data[i]==null){
-              data[i]='';
+          for (let i in data) {
+            if (data[i] == null) {
+              data[i] = '';
             }
           }
-          this.info.infoList=data;
+          this.info.infoList = data;
+          // console.log(data.img)
+          if (data.img) {
+            this.imageUrl = this.$store.state.globalSettings.imgUrl + data.img;
+          }
         })
         .catch(err => {
           this.$message.error('获取用户信息失败');

@@ -10,7 +10,7 @@ import axios from 'axios'
 Vue.config.productionTip = false;
 Vue.use(ElementUI)  //注册ElementUI
 Vue.prototype.axios=axios;
-
+Vue.prototype.$bus = new Vue();
 //创建全局过滤器
 function formatNumber(n){
   n=n.toString();
