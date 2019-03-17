@@ -1,51 +1,30 @@
 <template>
   <div class="main">
-      <!-- 面包屑导航 -->
+     <!-- 面包屑导航 -->
        <el-breadcrumb separator='/'>
           <el-breadcrumb-item :to="{path:'/main'}">首页</el-breadcrumb-item>
-           <el-breadcrumb-item >菜品管理</el-breadcrumb-item>          
-           <el-breadcrumb-item >添加菜品</el-breadcrumb-item>          
+           <el-breadcrumb-item >菜品类别管理</el-breadcrumb-item>          
+           <el-breadcrumb-item >类别列表</el-breadcrumb-item>          
        </el-breadcrumb>
     
-    <!-- 修改表单 -->
-     <el-form :label-position="labelPosition" label-width="90px">
-             <el-form-item label="菜品图片：">
-               <el-upload  
-               class="img-uploader"
-               :action="uploadAction"
-               :show-file-list='true'
-               :before-upload='beforeImgUpload'
-               :before-remove='beforeRemove'
-               :on-success='handleSuccess'
-               name='dishImg'
-              >
-                <img v-if="imageUrl" :src="imageUrl" class="img">
-                <i v-else class="el-icon-plus img-uploader-icon"></i>
-                <div slot="tip" class="el-upload__tip">只能上传gif/jpg/jpeg/png,且不能超过500kb</div>
-               </el-upload> 
-             </el-form-item>
-             <el-form-item label="主标题：">
-                 <el-input type="text" placeholder="请输入菜品主标题" v-model="formData.title" ></el-input>
-             </el-form-item>
-
-             <el-form-item  label="所属类别：">
-                  <el-radio-group @change="handleRadioChange" v-model="formData.categoryId">
-                    <el-radio v-for="(d,i) of dishList" :key="i" :label="d.cid">{{d.cname}}</el-radio>
-                  </el-radio-group>
-             </el-form-item>
-
-             <el-form-item  label="价格：">
-                 <el-input type="text" placeholder="请输入菜品价格" v-model="formData.price"></el-input>
-             </el-form-item>
-             <el-form-item  label="菜品描述：">
-                 <el-input type="textarea" 
-                 :autosize="{minRows:3}" resize='none' v-model="formData.detail" placeholder="请输入菜品价格" ></el-input>
-             </el-form-item>
-        </el-form>
-        <div style="text-align:center">
-           <el-button type='primary' @click="doSubmit">提交</el-button>
-           <el-button @click="doCancel" type='info' plain>取消</el-button>
-      </div>
+    <el-button style="margin-bottom:10px;" type='primary' size='small' plain @click="addCategory">添加新的菜品类别</el-button>
+     
+    <el-table 
+    :data='categoryList'
+    style="width:100%"
+    stripe border>
+        <el-table-column label='编号' prop='cid'>
+        </el-table-column>
+        <el-table-column label='名称' prop='cname'>
+        </el-table-column>
+        <el-table-column label="操作">
+          <!-- 插槽作用域的解构 -->
+          <template slot-scope="{row,$index}">
+            <el-button type='success' size='mini' plain @click="updateCategory(row,$index)">修改</el-button>
+            <el-button type='danger' size='mini' plain @click="deleteCategory(row,$index)">删除</el-button>
+          </template>
+        </el-table-column>
+    </el-table>
     </div>
 
   </div>
@@ -54,115 +33,82 @@
 export default {
   data(){
     return{
-      formData:{
-        title:'',
-        imgUrl:'',  //菜品在服务器上的随机文件名
-        price:'',
-        detail:'',
-        categoryId:''
-      },
-      dishList:[],
-      labelPosition:'right',
-      uploadAction:this.$store.state.globalSettings.apiUrl+'/admin/dish/image',
-      imageUrl:''
+      categoryList:[]
     }
+  },
+  mounted() {
+    var url=this.$store.state.globalSettings.apiUrl+'/admin/category';
+    this.axios.get(url)
+    .then(res=>{
+      this.categoryList=res.data;
+    })
+    .catch(err=>{
+      console.log(err)
+    })
   },
   methods: {
-    // 验证上传图片的格式
-    beforeImgUpload(file){
-      console.log(file)
-        var suffix=file.name.substring(file.name.lastIndexOf('.'));
-        var isCorr=/\.(jpg|jpeg|png|gif)/.test(suffix);
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isCorr) {
-          this.$message.error('上传图片格式只能是gif、jpg、jpeg、png!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传图片大小不能超过 2MB!');
-        }
-        return isCorr && isLt2M;
-    },
-    // 移除图片
-    beforeRemove(file){
-       this.$confirm(`确定移除${file.name}`,'提示',{type:'warning'})
-       .then(()=>{
-         this.imageUrl='';
-         this.$message.success('图片删除成功，可重新选择！');
-       })
-       .catch(()=>{
-         this.$message.info('已经取消删除');
-       })
-    },
-    //上传成功后 客户端得到响应消息
-    handleSuccess(res,file){
-         this.formData.imgUrl=res.fileName;
-         //把上传的图片编码为DataURL字符串
-         this.imageUrl=URL.createObjectURL(file.raw);
-    },
- 
-    handleRadioChange(value){
-      console.log(value)
-    },
-    //提交添加
-    doSubmit(){
-        this.axios.post(this.$store.state.globalSettings.apiUrl+'/admin/dish',this.formData)
-        .then(res=>{
-            // console.log(res.data)
-            if(res.data.code==200){
-              this.$message.success('添加成功');
-              this.formData={};
-              this.imageUrl='';
-            }else{
-              this.$message.error('添加失败')
-            }
-        })
-        .catch(err=>{
-            console.log(err)
-        })
-    },
-    doCancel(){
-      this.formData={}
-    },
-  },
-    mounted() {
-      this.axios.get(this.$store.state.globalSettings.apiUrl+'/admin/dish')
-      .then(res=>{
-          this.dishList=res.data;
-          console.log(res.data)
+    addCategory(){
+      this.$prompt('请输入新的菜品类别名','提示',{type:'info'})
+      .then(({value})=>{
+          var url=this.$store.state.globalSettings.apiUrl+'/admin/category';
+          this.axios.post(url,{cname:value})
+              .then(res=>{
+                  if(res.data.code==200){
+                    this.$message.success('添加菜品类别成功！');              
+                    this.categoryList.push({cid:res.data.cid,cname:value});
+                  }else{
+                    this.$message.error('新的类别添加出错！');
+                  } 
+              })
       })
-      .catch(err=>{
-          console.log(err)   
-       })
-  
+       this.$message({
+           type:'info',
+           message:'已取消添加'
+        })
+    },
+
+    updateCategory(c,index){
+      this.$prompt('请输入要更改的菜品类别名','提示',{inputValue:c.cname})
+      .then(({value})=>{
+          var url=this.$store.state.globalSettings.apiUrl+'/admin/category';
+          var data={cid:c.cid,cname:value};
+                  this.axios.put(url,data)
+                    .then(res=>{
+                        this.$message.success('菜品修改成功！')
+                    })
+                    .catch(err=>{
+                       this.$message.error('菜品修改出错'+res.data.msg)
+                    })
+      })
+      .catch(()=>{
+           this.$message({
+           type:'info',
+           message:'已取消修改'
+        })
+      })
+    },   
+
+    deleteCategory(c,index){
+      this.$confirm('删除操作不可撤销，您确定吗？','提示',{type:'warning'})
+      .then(()=>{
+           var url=this.$store.state.globalSettings.apiUrl+'/admin/category/'+c.cid;
+           this.axios.delete(url)
+              .then(res=>{
+                    this.categoryList.splice(index,1);
+                    this.$message.success('删除菜品成功！')
+              })
+              .catch(err=>{
+                  this.$message.error('类别删除出错'+res.data.msg)
+              })  
+      }).catch(()=>{
+        this.$message({
+           type:'info',
+           message:'已取消删除'
+        })
+      })
     }
-  
+  },
+
+
 }
 </script>
-<style lang="scss" >
-   .img-uploader {
-     .el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      &:hover{
-        border-color: #409EFF;
-      }  
-      .img{
-        width: 178px;
-        height: 178px;
-        display: block;
-      }
-      .img-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        width: 178px;
-        height: 178px;
-        line-height: 178px;
-        text-align: center;
-      } 
-    }
-   }
-
-</style>

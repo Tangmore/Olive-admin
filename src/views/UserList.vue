@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column label='爱好' prop='hobby'>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width='150px'>
+      <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
           <span @click="UserInfoDetail(row,$index)" class='copBtn'>详情</span>

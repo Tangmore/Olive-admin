@@ -12,11 +12,11 @@ import UserAdd from './views/UserAdd.vue'
 // 电影信息
 import movieList from './views/movieList.vue'
 import movieAdd from './views/movieAdd.vue'
-// import movieDetail from './views/movieDetail.vue'
+import MovieInfoEdit from './views/MovieInfoEdit.vue'
 
 // 电影类型
 import typeList from './views/typeList.vue'
-import typeAdd from './views/typeAdd.vue'
+// import typeAdd from './views/typeAdd.vue'
 
 // 影院
 import cinemaList from './views/cinemaList.vue'
@@ -51,10 +51,10 @@ export default new Router({
       
         {path:'/movie/list',component:movieList},
         {path:'/movie/add',component:movieAdd},
-        // {path:'/movie/detail',component:movieDetail},
+        {path:'/movie/edit/:id',component:MovieInfoEdit},
 
-        {path:'/type/list',component:typeList},
-        {path:'/type/add',component:typeAdd},
+        {path:'/movie/type',component:typeList},
+        // {path:'/type/add',component:typeAdd},
 
         {path:'/cinema/list',component:cinemaList},
         {path:'/cinema/add',component:cinemaAdd},

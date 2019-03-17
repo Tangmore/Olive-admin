@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column label='下架时间' prop='end_time' :formatter="dateFormat" sortable>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width='150px'>
+      <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
           <span @click="MovieInfoDetail(row,$index)" class='copBtn'>详情</span>
@@ -59,7 +59,7 @@
     />
 
     <!-- 电影信息编辑模态框 -->
-    <MovieInfoEdit class="movieInfoEdit" v-if='ismovieInfoEdit' :id='thismovieID' @tellEditShow='changeEditShow' />
+    <!-- <MovieInfoEdit class="movieInfoEdit" v-if='ismovieInfoEdit' :id='thismovieID' @tellEditShow='changeEditShow' /> -->
 
   </div>
 
@@ -67,7 +67,7 @@
 </template>
 <script>
   import MovieInfoModel from '../components/movie-admin/MovieInfoModel.vue'
-  import MovieInfoEdit from '../components/movie-admin/MovieInfoEdit.vue'
+  // import MovieInfoEdit from '../components/movie-admin/MovieInfoEdit.vue'
   export default {
     data() {
       return {
@@ -88,13 +88,13 @@
         ismovieInfoModal: false,
         thismovieDetail: {},
         // 电影信息编辑
-        ismovieInfoEdit: false,
-        thismovieID: ""
+        // ismovieInfoEdit: false,
+        // thismovieID: ""
       }
     },
     components: {
-      MovieInfoModel,
-      MovieInfoEdit
+      MovieInfoModel
+      // MovieInfoEdit
     },
     mounted() {
       this.infoInit();
@@ -150,25 +150,28 @@
 
       //编辑电影信息
       updateMovieInfo(c, index) {
-        if (this.ismovieInfoModal) {
-          this.$message({
-            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-            type: 'warning'
-          });
-          return;
-        }
-        this.ismovieInfoEdit = true;
-        this.thismovieID = c.id;
+        // if (this.ismovieInfoModal) {
+        //   this.$message({
+        //     message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+        //     type: 'warning'
+        //   });
+        //   return;
+        // }
+        // this.ismovieInfoEdit = true;
+        // this.thismovieID = c.id;
+
+
+        this.$router.push('/movie/edit/'+c.id);
       },
       // 获取当前电影信息
       MovieInfoDetail(c, index) {
-        if (this.ismovieInfoEdit) {
-          this.$message({
-            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-            type: 'warning'
-          });
-          return;
-        }
+        // if (this.ismovieInfoEdit) {
+        //   this.$message({
+        //     message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+        //     type: 'warning'
+        //   });
+        //   return;
+        // }
         this.ismovieInfoModal = true;
         this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getById?id=' + c.id)
           .then(res => {
@@ -242,9 +245,9 @@
         this.ismovieInfoModal = flag;
       },
       // 子传父isshow---个人详情编辑弹出框
-      changeEditShow(flag) {
-        this.ismovieInfoEdit = flag;
-      }
+      // changeEditShow(flag) {
+      //   this.ismovieInfoEdit = flag;
+      // }
 
     }
   }
@@ -258,15 +261,14 @@
     height:auto;
   }
 
-  .movieInfoEdit {
+  /* .movieInfoEdit {
     width: 600px;
     height: auto;
-  }
+  } */
 
   /* 弹出框*/
 
-  .movieInfoModal,
-  .movieInfoEdit {
+  .movieInfoModal {
     position: absolute;
     z-index: 99;
     top: 50%;
