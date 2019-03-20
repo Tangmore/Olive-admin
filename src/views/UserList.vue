@@ -197,12 +197,14 @@
       handleSizeChange(val) {
         // console.log(`每页 ${val} 条`);
         this.pageSize = val;
+        this.infoInit();
       },
       handleCurrentChange(val) {
         // console.log(`当前页: ${val}`);
         this.currentPage = val;
         this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
           this.pageSize, this.currentPage * this.pageSize);
+          this.infoInit();
       },
       // 子传父isshow---个人详情弹出框
       changeInfoShow(flag) {

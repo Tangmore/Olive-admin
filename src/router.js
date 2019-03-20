@@ -57,7 +57,7 @@ export default new Router({
         // {path:'/type/add',component:typeAdd},
 
         {path:'/cinema/list',component:cinemaList},
-        {path:'/cinema/add',component:cinemaAdd},
+        // {path:'/cinema/add',component:cinemaAdd},
 
         {path:'/comment/list',component:commentList},
         {path:'/comment/detail',component:commentDetail},
