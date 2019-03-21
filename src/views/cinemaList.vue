@@ -22,7 +22,7 @@
 
       <!-- <el-table-column label='评分' prop='praise' sortable>
       </el-table-column> -->
-     
+
       <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
@@ -84,6 +84,9 @@
       CinemaInfoEdit
     },
     mounted() {
+      this.$bus.$on('changeCinemaInfo', () => {
+        this.infoInit();
+      })
       this.infoInit();
     },
     methods: {
@@ -128,6 +131,13 @@
       },
       // 获取当前影院信息
       cinemaInfoDetail(c, index) {
+        if (this.iscinemaInfoEdit) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        }
         this.iscinemaInfoModal = true;
         this.axios.get(this.$store.state.globalSettings.apiUrl + 'cinema/getById?id=' + c.id)
           .then(res => {
@@ -147,7 +157,7 @@
       },
       //删除当前行影院
       deletecinema(c, index) {
-         this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
+        this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
           .then(() => {
             var that = this;
             var url = this.$store.state.globalSettings.apiUrl + 'cinema/delete/?id=' + c.id;
@@ -196,10 +206,14 @@
         this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
           this.pageSize, this.currentPage * this.pageSize);
       },
-      // 子传父isshow---个人详情弹出框
+      // 子传父isshow---详情弹出框
       changeInfoShow(flag) {
         this.iscinemaInfoModal = flag;
       },
+      // 编辑弹出框
+      changeEditShow(flag) {
+        this.iscinemaInfoEdit = flag;
+      }
     }
   }
 </script>
@@ -208,18 +222,19 @@
   /*影院详情弹出框*/
 
   .cinemaInfoModal {
-    width: 600px;
-    height:auto;
+    width: 500px;
+    height: auto;
   }
 
-  /* .cinemaInfoEdit {
+  .cinemaInfoEdit {
     width: 600px;
     height: auto;
-  } */
+  }
 
   /* 弹出框*/
 
-  .cinemaInfoModal {
+  .cinemaInfoModal,
+  .cinemaInfoEdit {
     position: absolute;
     z-index: 99;
     top: 50%;

@@ -11,7 +11,7 @@
   
         <el-form-item label="影片：">
           <el-upload class="img-uploader" :action="uploadAction" :show-file-list='true' :before-upload='beforeImgUpload' :before-remove='beforeRemove'
-            :on-success='handleSuccess' name='dishImg' :limit='3'>
+            :on-success='handleSuccess' name='movieImg' :limit='3'>
             <!-- <img  src="" class="img"> -->
             <i class="el-icon-plus img-uploader-icon"></i>
             <span slot="tip" class="el-upload__tip" style="margin-left: 20px">只能上传gif/jpg/jpeg/png,且不能超过500kb</span>

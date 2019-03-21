@@ -36,22 +36,6 @@
                 </el-menu-item-group>
               </el-submenu>
 
-            <!-- <el-submenu index='type'>
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>电影类型</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index='/type/list'>类型列表</el-menu-item>
-                <el-menu-item index='/type/add'>添加类型</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu> -->
-<!-- 
-            <el-menu-item index='/type/list'>
-              <i class="el-icon-document"></i>
-              <span slot="title">电影类型</span>
-            </el-menu-item> -->
-
             <el-submenu index='cinema'>
                 <template slot="title">
                   <i class="el-icon-star-off"></i>

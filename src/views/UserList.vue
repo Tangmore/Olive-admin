@@ -84,7 +84,7 @@
       UserInfoEdit
     },
     mounted() {
-      this.$bus.$on('changeInfo', () => {
+      this.$bus.$on('changeUserInfo', () => {
         this.infoInit();
       })
       this.infoInit();

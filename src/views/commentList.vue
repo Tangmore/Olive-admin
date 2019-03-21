@@ -1,48 +1,33 @@
 <template>
-  <div class="movieEditmain">
+  <div class="userEditmain">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator='/'>
-      <el-breadcrumb-item :to="{path:'/main'}">评论</el-breadcrumb-item>
-      <el-breadcrumb-item>评论信息</el-breadcrumb-item>
-      <el-breadcrumb-item>评论列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{path:'/main'}">评论管理</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 条件查询 -->
-    <div class="searchBtn">
+    <!-- <div class="searchBtn">
       <el-input placeholder="请输入评论名" v-model="searchContnt" size="small" clearable>
-        <el-button slot="append" size="small" @click='movienameSearch'>搜索</el-button>
+        <el-button slot="append" size="small" @click='usercommentDetailSearch'>搜索</el-button>
       </el-input>
-    </div>
+    </div> -->
     <!-- 评论列表 -->
     <el-table :data='currentPageData' style="width:100%" stripe border>
       <el-table-column label='id' prop='id' sortable>
       </el-table-column>
-      <el-table-column label='评论名' prop='name'>
+      <el-table-column label='用户名' prop='username' sortable>
       </el-table-column>
-      <el-table-column label='评论类型' prop='typename'>
+      <el-table-column label='电影名' prop='moviename'>
       </el-table-column>
-      <el-table-column label='上映影院' prop='cinemaname'>
+      <el-table-column label='评论' prop='comment'>
       </el-table-column>
-      <el-table-column label='评论描述' prop='describle'>
-      </el-table-column>
-      <el-table-column label='主演' prop='starring'>
-      </el-table-column>
-      <el-table-column label='影片图片' prop='img'>
-      </el-table-column>
-      <el-table-column label='评分' prop='praise' sortable>
-      </el-table-column>
-      <el-table-column label='票价' prop='price' sortable>
-      </el-table-column>
-      <el-table-column label='上映时间' prop='start_time' :formatter="dateFormat" sortable>
-      </el-table-column>
-      <el-table-column label='下架时间' prop='end_time' :formatter="dateFormat" sortable>
+      <el-table-column label='分数' prop='score'>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
-          <span @click="MovieInfoDetail(row,$index)" class='copBtn'>详情</span>
-          <span @click="updateMovieInfo(row,$index)" class='copBtn'>编辑</span>
-          <span @click="deleteMovie(row,$index)" class='copBtn'>删除</span>
-
+          <span @click="UserInfoDetail(row,$index)" class='copBtn'>详情</span>
+          <span @click="updateUserInfo(row,$index)" class='copBtn'>编辑</span>
+          <span @click="deleteUser(row,$index)" class='copBtn'>删除</span>
         </template>
       </el-table-column>
     </el-table>
@@ -55,19 +40,18 @@
     </div>
 
     <!-- 评论详情模态框 -->
-    <MovieInfoModel class="movieInfoModal" v-show='ismovieInfoModal' :movieDetail='thismovieDetail' @tellShow='changeInfoShow'
-    />
+    <CommentInfoModel class="userInfoModal" v-show='isuserInfoModal' :commentDetail='thiscommentDetail' @tellShow='changeInfoShow' />
 
     <!-- 评论信息编辑模态框 -->
-    <!-- <MovieInfoEdit class="movieInfoEdit" v-if='ismovieInfoEdit' :id='thismovieID' @tellEditShow='changeEditShow' /> -->
+    <!-- <CommentInfoEdit class="UserInfoEdit" v-if='isuserInfoEdit' :id='thisuserID' @tellEditShow='changeEditShow' /> -->
 
   </div>
 
   </div>
 </template>
 <script>
-  import MovieInfoModel from '../components/movie-admin/MovieInfoModel.vue'
-  // import MovieInfoEdit from '../components/movie-admin/MovieInfoEdit.vue'
+  import CommentInfoModel from '../components/comment-admin/CommentInfoModel.vue'
+  // import CommentInfoEdit from '../components/comment-admin/CommentInfoEdit.vue'
   export default {
     data() {
       return {
@@ -85,25 +69,111 @@
         // 总条数
         infoLength: 0,
         // 评论详情
-        ismovieInfoModal: false,
-        thismovieDetail: {},
+        isuserInfoModal: false,
+        thiscommentDetail: {},
         // 评论信息编辑
-        // ismovieInfoEdit: false,
-        // thismovieID: ""
+        isuserInfoEdit: false,
+        thisuserID: ""
       }
     },
+
     components: {
-      MovieInfoModel
-      // MovieInfoEdit
+      CommentInfoModel
+      // CommentInfoEdit
     },
     mounted() {
+      this.$bus.$on('changeUserInfo', () => {
+        this.infoInit();
+      })
       this.infoInit();
     },
     methods: {
-
       //评论列表初始化
       infoInit() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getList')
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'comment/getList')
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              if (res.data.rtnCode == 200) {
+                // this.data.data.comment=this.data.data.comment.slice(0,14);
+                for(var item of res.data.data){
+                  item.comment=item.comment.slice(0,14)+'...';
+                }
+                this.infoAll = res.data.data;
+                this.dividePage();
+              }
+            } else {
+              this.$message.error('服务器内部错误！');
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+      //编辑评论信息
+      updateUserInfo(c, index) {
+        if (this.isuserInfoModal) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        }
+        this.isuserInfoEdit = true;
+        this.thisuserID = c.id;
+      },
+      // 获取当前评论信息
+      UserInfoDetail(c, index) {
+        if (this.isuserInfoEdit) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        }
+        this.isuserInfoModal = true;
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'comment/getById?id=' + c.id)
+          .then(res => {
+            // console.log(res);
+            if (res.status == 200) {
+              if (res.data.rtnCode == 200) {
+                this.thiscommentDetail = res.data.data;
+              }
+            } else {
+              this.$message.error('服务器内部错误！');
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+
+      },
+      //删除当前行评论
+      deleteUser(c, index) {
+        this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
+          .then(() => {
+            var that = this;
+            var url = this.$store.state.globalSettings.apiUrl + 'comment/delete?id=' + c.id;
+            this.axios.get(url)
+              .then(res => {
+                that.infoAll.splice(index, 1);
+                this.$message.success(res.data.msg);
+                this.infoInit();
+              })
+              .catch(err => {
+                this.$message.error('删除评论失败！')
+              })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+      },
+
+      //按评论名查找评论
+      usercommentDetailSearch() {
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'comment/getList?commentDetail=' + this.searchContnt)
           .then(res => {
             // console.log(res);
             if (res.status == 200) {
@@ -126,128 +196,26 @@
           this.pageSize, this.currentPage * this.pageSize);
         this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
       },
-      // 表格时间内容格式化
-      formatNumber(n) {
-        n = n.toString();
-        return n[1] ? n : '0' + n;
-      },
-      dateFormat(row, column) {
-        var val = row[column.property];
-        if (val == undefined) {
-          return "";
-        }
-        var date = new Date(val);
-        var yy = date.getFullYear();
-        var mm = date.getMonth() + 1;
-        var dd = date.getDay();
-        var hh = date.getHours();
-        var mi = date.getMinutes();
-        var ss = date.getSeconds();
-        var formatdate = [mm, dd].map(this.formatNumber).join('-');
-        var formattime = [hh, mi, ss].map(this.formatNumber).join(':');
-        return yy + '-' + formatdate + ' ' + formattime;
-      },
-
-      //编辑评论信息
-      updateMovieInfo(c, index) {
-        // if (this.ismovieInfoModal) {
-        //   this.$message({
-        //     message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-        //     type: 'warning'
-        //   });
-        //   return;
-        // }
-        // this.ismovieInfoEdit = true;
-        // this.thismovieID = c.id;
-
-
-        this.$router.push('/movie/edit/'+c.id);
-      },
-      // 获取当前评论信息
-      MovieInfoDetail(c, index) {
-        // if (this.ismovieInfoEdit) {
-        //   this.$message({
-        //     message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-        //     type: 'warning'
-        //   });
-        //   return;
-        // }
-        this.ismovieInfoModal = true;
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getById?id=' + c.id)
-          .then(res => {
-            // console.log(res);
-            if (res.status == 200) {
-              if (res.data.rtnCode == 200) {
-                this.thismovieDetail = res.data.data;
-              }
-            } else {
-              this.$message.error('服务器内部错误！');
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
-
-      },
-      //删除当前行评论
-      deleteMovie(c, index) {
-         this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
-          .then(() => {
-            var that = this;
-            var url = this.$store.state.globalSettings.apiUrl + 'movie/delete/?id=' + c.id;
-            this.axios.get(url)
-              .then(res => {
-                that.infoAll.splice(index, 1);
-                this.$message.success(res.data.msg);
-                this.infoInit();
-              })
-              .catch(err => {
-                this.$message.error('删除评论失败！')
-              })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-      },
-
-      //根据评论名查找评论
-      movienameSearch() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getList?name=' + this.searchContnt)
-          .then(res => {
-            console.log(res);
-            if (res.status == 200) {
-              if (res.data.rtnCode == 200) {
-                this.infoAll = res.data.data;
-                this.dividePage();
-              }
-            } else {
-              this.$message.error('服务器内部错误！');
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      },
       handleSizeChange(val) {
         // console.log(`每页 ${val} 条`);
         this.pageSize = val;
+        this.infoInit();
       },
       handleCurrentChange(val) {
         // console.log(`当前页: ${val}`);
         this.currentPage = val;
         this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
           this.pageSize, this.currentPage * this.pageSize);
+          this.infoInit();
       },
       // 子传父isshow---个人详情弹出框
       changeInfoShow(flag) {
-        this.ismovieInfoModal = flag;
+        this.isuserInfoModal = flag;
       },
       // 子传父isshow---个人详情编辑弹出框
-      // changeEditShow(flag) {
-      //   this.ismovieInfoEdit = flag;
-      // }
+      changeEditShow(flag) {
+        this.isuserInfoEdit = flag;
+      }
 
     }
   }
@@ -256,19 +224,20 @@
   @import url('../assets/scss/common.scss');
   /*评论详情弹出框*/
 
-  .movieInfoModal {
-    width: 600px;
-    height:auto;
-  }
-
-  /* .movieInfoEdit {
+  .userInfoModal {
     width: 600px;
     height: auto;
-  } */
+  }
+
+  .UserInfoEdit {
+    width: 600px;
+    height: auto;
+  }
 
   /* 弹出框*/
 
-  .movieInfoModal {
+  .userInfoModal,
+  .UserInfoEdit {
     position: absolute;
     z-index: 99;
     top: 50%;
