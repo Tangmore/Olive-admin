@@ -5,11 +5,11 @@
       <el-breadcrumb-item :to="{path:'/main'}">评论管理</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 条件查询 -->
-    <!-- <div class="searchBtn">
-      <el-input placeholder="请输入评论名" v-model="searchContnt" size="small" clearable>
+    <div class="searchBtn">
+      <el-input placeholder="请输入用户名" v-model="searchContnt" size="small" clearable>
         <el-button slot="append" size="small" @click='usercommentDetailSearch'>搜索</el-button>
       </el-input>
-    </div> -->
+    </div>
     <!-- 评论列表 -->
     <el-table :data='currentPageData' style="width:100%" stripe border>
       <el-table-column label='id' prop='id' sortable>
@@ -26,7 +26,6 @@
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
           <span @click="UserInfoDetail(row,$index)" class='copBtn'>详情</span>
-          <span @click="updateUserInfo(row,$index)" class='copBtn'>编辑</span>
           <span @click="deleteUser(row,$index)" class='copBtn'>删除</span>
         </template>
       </el-table-column>
@@ -42,16 +41,12 @@
     <!-- 评论详情模态框 -->
     <CommentInfoModel class="userInfoModal" v-show='isuserInfoModal' :commentDetail='thiscommentDetail' @tellShow='changeInfoShow' />
 
-    <!-- 评论信息编辑模态框 -->
-    <!-- <CommentInfoEdit class="UserInfoEdit" v-if='isuserInfoEdit' :id='thisuserID' @tellEditShow='changeEditShow' /> -->
-
   </div>
 
   </div>
 </template>
 <script>
   import CommentInfoModel from '../components/comment-admin/CommentInfoModel.vue'
-  // import CommentInfoEdit from '../components/comment-admin/CommentInfoEdit.vue'
   export default {
     data() {
       return {
@@ -70,16 +65,13 @@
         infoLength: 0,
         // 评论详情
         isuserInfoModal: false,
-        thiscommentDetail: {},
-        // 评论信息编辑
-        isuserInfoEdit: false,
-        thisuserID: ""
+        thiscommentDetail: {}
       }
     },
 
     components: {
       CommentInfoModel
-      // CommentInfoEdit
+    
     },
     mounted() {
       this.$bus.$on('changeUserInfo', () => {
@@ -110,18 +102,7 @@
             console.log(err)
           })
       },
-      //编辑评论信息
-      updateUserInfo(c, index) {
-        if (this.isuserInfoModal) {
-          this.$message({
-            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-            type: 'warning'
-          });
-          return;
-        }
-        this.isuserInfoEdit = true;
-        this.thisuserID = c.id;
-      },
+     
       // 获取当前评论信息
       UserInfoDetail(c, index) {
         if (this.isuserInfoEdit) {
@@ -173,7 +154,7 @@
 
       //按评论名查找评论
       usercommentDetailSearch() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'comment/getList?commentDetail=' + this.searchContnt)
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'comment/getList?username=' + this.searchContnt)
           .then(res => {
             // console.log(res);
             if (res.status == 200) {
@@ -223,21 +204,12 @@
 <style lang='scss'>
   @import url('../assets/scss/common.scss');
   /*评论详情弹出框*/
-
   .userInfoModal {
     width: 600px;
     height: auto;
   }
-
-  .UserInfoEdit {
-    width: 600px;
-    height: auto;
-  }
-
   /* 弹出框*/
-
-  .userInfoModal,
-  .UserInfoEdit {
+  .userInfoModal{
     position: absolute;
     z-index: 99;
     top: 50%;

@@ -7,17 +7,19 @@
             </div>
             <el-form :label-position="labelPosition" label-width="90px">
                 <el-form-item label="用户名：">
-                        {{userDetail.name}}
-                </el-form-item> 
+                    {{userDetail.name}}
+                </el-form-item>
                 <el-form-item label="头像：">
-                        <img :src="userDetail.img?userDetail.img:''" alt="" style="width: 100px;height: 100px;vertical-align:top; ">
+                    <img :src="userDetail.img?userDetail.img:''" alt="" style="width: 100px;height: 100px;vertical-align:top; ">
                 </el-form-item>
                 <el-form-item label="手机号：">
-                        {{userDetail.phone}}
-                </el-form-item> 
+                    {{userDetail.phone}}
+                </el-form-item>
                 <el-form-item label="爱好：">
+                    <div class="discrible">
                         {{userDetail.hobby}}
-                </el-form-item> 
+                    </div>
+                </el-form-item>
             </el-form>
         </el-card>
     </div>
@@ -26,7 +28,7 @@
     export default {
         data() {
             return {
-                labelPosition:'right'
+                labelPosition: 'right'
             }
         },
         props: ['userDetail'],
@@ -38,5 +40,5 @@
     }
 </script>
 <style lang="scss">
-  
+    @import url('../../assets/scss/common.scss');
 </style>

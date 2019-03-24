@@ -150,28 +150,10 @@
 
       //编辑电影信息
       updateMovieInfo(c, index) {
-        // if (this.ismovieInfoModal) {
-        //   this.$message({
-        //     message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-        //     type: 'warning'
-        //   });
-        //   return;
-        // }
-        // this.ismovieInfoEdit = true;
-        // this.thismovieID = c.id;
-
-
         this.$router.push('/movie/edit/'+c.id);
       },
       // 获取当前电影信息
       MovieInfoDetail(c, index) {
-        // if (this.ismovieInfoEdit) {
-        //   this.$message({
-        //     message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-        //     type: 'warning'
-        //   });
-        //   return;
-        // }
         this.ismovieInfoModal = true;
         this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getById?id=' + c.id)
           .then(res => {

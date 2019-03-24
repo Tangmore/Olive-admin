@@ -42,7 +42,7 @@
     </div>
 
     <!-- 影院详情模态框 -->
-    <CinemaInfoModel class="cinemaInfoModal" v-show='iscinemaInfoModal' :cinemaDetail='thiscinemaDetail' @tellShow='changeInfoShow'
+    <CinemaInfoModel class="cinemaInfoModal" v-if='iscinemaInfoModal' :id='thiscinemaID'  @tellShow='changeInfoShow'
     />
 
     <!-- 影院信息编辑模态框 -->
@@ -126,6 +126,7 @@
           });
           return;
         }
+        console.log(this.iscinemaInfoModal);
         this.iscinemaInfoEdit = true;
         this.thiscinemaID = c.id;
       },
@@ -139,20 +140,8 @@
           return;
         }
         this.iscinemaInfoModal = true;
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'cinema/getById?id=' + c.id)
-          .then(res => {
-            // console.log(res);
-            if (res.status == 200) {
-              if (res.data.rtnCode == 200) {
-                this.thiscinemaDetail = res.data.data;
-              }
-            } else {
-              this.$message.error('服务器内部错误！');
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
+        this.thiscinemaID = c.id;
+        
 
       },
       //删除当前行影院
@@ -222,7 +211,7 @@
   /*影院详情弹出框*/
 
   .cinemaInfoModal {
-    width: 500px;
+    width: 600px;
     height: auto;
   }
 

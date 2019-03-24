@@ -31,7 +31,7 @@
     data() {
       return {
         info: {
-          infoList: { name: '',addr: '' },
+          infoList: { name: '', addr: '' },
         },
         labelPosition: 'right'
       }
@@ -40,17 +40,18 @@
     methods: {
       //提交修改
       doSubmit() {
-        var that=this;
+        var that = this;
         var url = this.$store.state.globalSettings.apiUrl + 'cinema/edit?id=' + this.id;
-           this.axios.post(url,this.info.infoList)
-              .then(res=>{
-                this.$message.success('影院信息修改成功！');
-                    this.changeIs();
-                    // this.$bus.$emit('changeInfo');
-              })
-              .catch(err=>{
-                  this.$message.error('编辑影院失败！')
-              })  
+        this.axios.post(url, this.info.infoList)
+          .then(res => {
+            this.$message.success('影院信息修改成功！');
+            this.$bus.$emit('changeCinemaInfo');
+            this.changeIs();
+
+          })
+          .catch(err => {
+            this.$message.error('编辑影院失败！')
+          })
       },
       // 子传父----关闭弹出框
       changeIs() {
@@ -71,30 +72,5 @@
   }
 </script>
 <style lang="scss">
-  .img-uploader {
-    .el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      &:hover {
-        border-color: #409EFF;
-      }
-      .img {
-        width: 170px;
-        height: 170px;
-        display: block;
-      }
-      .img-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        width: 170px;
-        height: 170px;
-        line-height: 170px;
-        text-align: center;
-      }
-
-    }
-  }
+ 
 </style>

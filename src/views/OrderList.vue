@@ -1,51 +1,41 @@
 <template>
-  <div class="movieEditmain">
+  <div class="orderEditmain">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator='/'>
-      <el-breadcrumb-item :to="{path:'/main'}">订单</el-breadcrumb-item>
-      <el-breadcrumb-item>订单信息</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{path:'/main'}">订单管理</el-breadcrumb-item>
       <el-breadcrumb-item>订单列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 条件查询 -->
     <div class="searchBtn">
-      <el-input placeholder="请输入订单名" v-model="searchContnt" size="small" clearable>
-        <el-button slot="append" size="small" @click='movienameSearch'>搜索</el-button>
+      <el-input placeholder="请输入用户名" v-model="searchContnt" size="small" clearable>
+        <el-button slot="append" size="small" @click='ordernameSearch'>搜索</el-button>
       </el-input>
     </div>
     <!-- 订单列表 -->
     <el-table :data='currentPageData' style="width:100%" stripe border>
       <el-table-column label='id' prop='id' sortable>
       </el-table-column>
-      <el-table-column label='订单名' prop='name'>
+      <el-table-column label='用户名' prop='username'>
       </el-table-column>
-      <el-table-column label='订单类型' prop='typename'>
+      <el-table-column label='电影名' prop='moviename'>
       </el-table-column>
-      <el-table-column label='上映影院' prop='cinemaname'>
+      <el-table-column label='数量' prop='num' sortable>
       </el-table-column>
-      <el-table-column label='订单描述' prop='describle'>
+      <el-table-column label='影院' prop='cinemaname'>
       </el-table-column>
-      <el-table-column label='主演' prop='starring'>
+      <el-table-column label='下单时间' prop='ordertime'  :formatter="dateFormat" sortable>
       </el-table-column>
-      <el-table-column label='影片图片' prop='img'>
-      </el-table-column>
-      <el-table-column label='评分' prop='praise' sortable>
-      </el-table-column>
-      <el-table-column label='票价' prop='price' sortable>
-      </el-table-column>
-      <el-table-column label='上映时间' prop='start_time' :formatter="dateFormat" sortable>
-      </el-table-column>
-      <el-table-column label='下架时间' prop='end_time' :formatter="dateFormat" sortable>
-      </el-table-column>
+      <el-table-column label='总价' prop='total_price' sortable>
+        </el-table-column>
       <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
-          <span @click="MovieInfoDetail(row,$index)" class='copBtn'>详情</span>
-          <span @click="updateMovieInfo(row,$index)" class='copBtn'>编辑</span>
-          <span @click="deleteMovie(row,$index)" class='copBtn'>删除</span>
-
+          <span @click="orderInfoDetail(row,$index)" class='copBtn'>详情</span>
+          <span @click="deleteorder(row,$index)" class='copBtn'>删除</span>
+      
         </template>
       </el-table-column>
-    </el-table>
+      </el-table>
 
     <!-- 订单列表分页显示 -->
     <div class="block">
@@ -55,19 +45,13 @@
     </div>
 
     <!-- 订单详情模态框 -->
-    <MovieInfoModel class="movieInfoModal" v-show='ismovieInfoModal' :movieDetail='thismovieDetail' @tellShow='changeInfoShow'
+    <OrderInfoModel class="orderInfoModal" v-if='isorderInfoModal' :id='thisorderID'  @tellShow='changeInfoShow'
     />
-
-    <!-- 订单信息编辑模态框 -->
-    <!-- <MovieInfoEdit class="movieInfoEdit" v-if='ismovieInfoEdit' :id='thismovieID' @tellEditShow='changeEditShow' /> -->
-
   </div>
-
   </div>
 </template>
 <script>
-  import MovieInfoModel from '../components/movie-admin/MovieInfoModel.vue'
-  // import MovieInfoEdit from '../components/movie-admin/MovieInfoEdit.vue'
+  import OrderInfoModel from '../components/order-admin/OrderInfoModel.vue'
   export default {
     data() {
       return {
@@ -85,25 +69,27 @@
         // 总条数
         infoLength: 0,
         // 订单详情
-        ismovieInfoModal: false,
-        thismovieDetail: {},
+        isorderInfoModal: false,
+        thisorderDetail: {},
         // 订单信息编辑
-        // ismovieInfoEdit: false,
-        // thismovieID: ""
+        isorderInfoEdit: false,
+        thisorderID: ""
       }
     },
     components: {
-      MovieInfoModel
-      // MovieInfoEdit
+      OrderInfoModel
     },
     mounted() {
+      this.$bus.$on('changeorderInfo', () => {
+        this.infoInit();
+      })
       this.infoInit();
     },
     methods: {
 
       //订单列表初始化
       infoInit() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getList')
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'orders/getList')
           .then(res => {
             // console.log(res);
             if (res.status == 200) {
@@ -126,8 +112,8 @@
           this.pageSize, this.currentPage * this.pageSize);
         this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
       },
-      // 表格时间内容格式化
-      formatNumber(n) {
+         // 表格时间内容格式化
+         formatNumber(n) {
         n = n.toString();
         return n[1] ? n : '0' + n;
       },
@@ -147,54 +133,40 @@
         var formattime = [hh, mi, ss].map(this.formatNumber).join(':');
         return yy + '-' + formatdate + ' ' + formattime;
       },
-
       //编辑订单信息
-      updateMovieInfo(c, index) {
-        // if (this.ismovieInfoModal) {
-        //   this.$message({
-        //     message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-        //     type: 'warning'
-        //   });
-        //   return;
-        // }
-        // this.ismovieInfoEdit = true;
-        // this.thismovieID = c.id;
-
-
-        this.$router.push('/movie/edit/'+c.id);
+      updateorderInfo(c, index) {
+        // this.$router.push('/order/edit/'+c.id);
+        if (this.isorderInfoModal) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        }
+        console.log(this.isorderInfoModal);
+        this.isorderInfoEdit = true;
+        this.thisorderID = c.id;
       },
       // 获取当前订单信息
-      MovieInfoDetail(c, index) {
-        // if (this.ismovieInfoEdit) {
-        //   this.$message({
-        //     message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
-        //     type: 'warning'
-        //   });
-        //   return;
-        // }
-        this.ismovieInfoModal = true;
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getById?id=' + c.id)
-          .then(res => {
-            // console.log(res);
-            if (res.status == 200) {
-              if (res.data.rtnCode == 200) {
-                this.thismovieDetail = res.data.data;
-              }
-            } else {
-              this.$message.error('服务器内部错误！');
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
+      orderInfoDetail(c, index) {
+        if (this.isorderInfoEdit) {
+          this.$message({
+            message: '一次只能打开一个弹出窗，请先关闭其他弹出框！',
+            type: 'warning'
+          });
+          return;
+        }
+        this.isorderInfoModal = true;
+        this.thisorderID = c.id;
+        // console.log(this.thisorderID)
 
       },
       //删除当前行订单
-      deleteMovie(c, index) {
-         this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
+      deleteorder(c, index) {
+        this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
           .then(() => {
             var that = this;
-            var url = this.$store.state.globalSettings.apiUrl + 'movie/delete/?id=' + c.id;
+            var url = this.$store.state.globalSettings.apiUrl + 'orders/delete/?id=' + c.id;
             this.axios.get(url)
               .then(res => {
                 that.infoAll.splice(index, 1);
@@ -213,8 +185,8 @@
       },
 
       //根据订单名查找订单
-      movienameSearch() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getList?name=' + this.searchContnt)
+      ordernameSearch() {
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'orders/getList?username=' + this.searchContnt)
           .then(res => {
             console.log(res);
             if (res.status == 200) {
@@ -240,15 +212,14 @@
         this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
           this.pageSize, this.currentPage * this.pageSize);
       },
-      // 子传父isshow---个人详情弹出框
+      // 子传父isshow---详情弹出框
       changeInfoShow(flag) {
-        this.ismovieInfoModal = flag;
+        this.isorderInfoModal = flag;
       },
-      // 子传父isshow---个人详情编辑弹出框
-      // changeEditShow(flag) {
-      //   this.ismovieInfoEdit = flag;
-      // }
-
+      // 编辑弹出框
+      changeEditShow(flag) {
+        this.isorderInfoEdit = flag;
+      }
     }
   }
 </script>
@@ -256,19 +227,20 @@
   @import url('../assets/scss/common.scss');
   /*订单详情弹出框*/
 
-  .movieInfoModal {
-    width: 600px;
-    height:auto;
-  }
-
-  /* .movieInfoEdit {
+  .orderInfoModal {
     width: 600px;
     height: auto;
-  } */
+  }
+
+  .orderInfoEdit {
+    width: 600px;
+    height: auto;
+  }
 
   /* 弹出框*/
 
-  .movieInfoModal {
+  .orderInfoModal,
+  .orderInfoEdit {
     position: absolute;
     z-index: 99;
     top: 50%;

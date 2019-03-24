@@ -28,7 +28,7 @@
                     {{movieDetail.start_time | date}}~{{movieDetail.end_time | date}}
                 </el-form-item>
                 <el-form-item label="描述:">
-                    {{movieDetail.describle}}
+                    <div class="discrible"> {{movieDetail.describle}}</div>
                 </el-form-item>
             </el-form>
         </el-card>
@@ -50,7 +50,11 @@
     }
 </script>
 <style lang="scss" scoped>
+    @import url('../../assets/scss/common.scss');
     .moviedetail .el-form-item {
         margin-bottom: 0;
+    }
+    .el-col-1 {
+        text-align: center
     }
 </style>

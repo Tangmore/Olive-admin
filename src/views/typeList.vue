@@ -6,7 +6,7 @@
       <el-breadcrumb-item>电影类型</el-breadcrumb-item>
     </el-breadcrumb>
 
-    <el-button style="margin-bottom:10px;" type='primary' size='small' plain @click="addtype">添加新的电影类型</el-button>
+    <el-button style="margin-bottom:10px;margin-top:20px" type='primary' size='small' plain @click="addtype">添加新的电影类型</el-button>
 
     <el-table :data='currentPageData' style="width:80%" stripe border>
       <el-table-column label='编号' prop='id'>

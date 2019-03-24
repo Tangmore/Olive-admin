@@ -16,7 +16,6 @@ import MovieInfoEdit from './views/MovieInfoEdit.vue'
 
 // 电影类型
 import typeList from './views/typeList.vue'
-// import typeAdd from './views/typeAdd.vue'
 
 // 影院
 import cinemaList from './views/cinemaList.vue'
@@ -24,14 +23,12 @@ import cinemaAdd from './views/cinemaAdd.vue'
 
 //评论
 import commentList from './views/commentList.vue'
-import commentDetail from './views/commentDetail.vue'
 
 //订单管理
-import orderList from './views/orderList.vue'
-import orderDetail from './views/orderDetail.vue'
+import orderList from './views/OrderList.vue'
 
 // //管理员
-// import admin from './views/admin.vue'
+import admin from './views/AdminAdd.vue'
 
 Vue.use(Router)
 //路由词典
@@ -46,26 +43,21 @@ export default new Router({
         {path:'',redirect:'/user/list'},        
         {path:'/user/list',component:UserList},
         {path:'/user/add',component:UserAdd},
-        // {path:'/user/detail/:id',component:UserDetail},
-        // {path:'/user/edit/:id',component:UserInfoEdit},
       
         {path:'/movie/list',component:movieList},
         {path:'/movie/add',component:movieAdd},
         {path:'/movie/edit/:id',component:MovieInfoEdit},
 
         {path:'/movie/type',component:typeList},
-        // {path:'/type/add',component:typeAdd},
 
         {path:'/cinema/list',component:cinemaList},
-        // {path:'/cinema/add',component:cinemaAdd},
+        {path:'/cinema/add',component:cinemaAdd},
 
         {path:'/comment/list',component:commentList},
-        {path:'/comment/detail',component:commentDetail},
 
         {path:'/orders/list',component:orderList},
-        {path:'/orders/detail',component:orderDetail}
 
-        // {path:'/admin',component:admin}
+        {path:'/admin',component:admin}
       ]
     },
     { path: '*', component: NotFound },
