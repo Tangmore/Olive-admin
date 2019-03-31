@@ -5,7 +5,7 @@
          <div>
            <el-form :label-position="labelPosition" label-width="90px">
              <el-form-item label="管理员名：">
-               <el-input placeholder="请输入管理员名" v-model="formData.username"></el-input>
+               <el-input placeholder="请输入管理员名" v-model="formData.userName"></el-input>
              </el-form-item>
                 <el-form-item label="密码：">
                <el-input type="password" placeholder="请输入密码" v-model="formData.password"></el-input>
@@ -28,40 +28,39 @@ export default {
       labelPosition:'right',
       //表单数据
       formData:{
-        username:"",
+        userName:"",
         password:""
       }
     }
   },
   methods:{
     doLogin(){
-      let formData={
-        "username":this.formData.username,
-        "password":this.formData.password
-      }
-       if(!this.formData.username || !this.formData.password){
+      // let formData={
+      //   "username":this.formData.username,
+      //   "password":this.formData.password
+      // }
+      // console.log(this.formData.userName)
+       if(!this.formData.userName || !this.formData.password){
                     this.$message({
                       message: '用户名和密码不能为空',
                       type: 'warning'
                     });
                     return;
                 }
-       this.axios.post( this.$store.state.globalSettings.apiUrl+'admin/login/',formData)
+       this.axios.post( this.$store.state.globalSettings.apiUrl+'managemodule/admin/adminLogin',this.formData)
             .then(res=>{
-                console.log(res);
-                if(res.status==200){
-                  if(res.data.rtnCode==200){
-                      this.$message({
-                        message: '登录成功',
+                // console.log(res.data.state);
+                if(res.status==200){ 
+                  this.$message({
+                        message: res.data.msg,
                         type: 'success',
                         duration:1000
                       });
-                    this.$store.commit('signin',this.formData.username); 
-
-                    setTimeout(()=>{ this.$router.push('/main')},1600);
-                  }else{
-                    this.$message.error('用户名或密码有误！');
-                  }
+                      if(res.data.state){
+                        sessionStorage.setItem('token',res.data.row);
+                        this.$store.commit('signin',this.formData.userName); 
+                        this.$router.push('/');
+                      }
                 }
             })
             .catch(err=>{
@@ -92,6 +91,7 @@ created() {
 <style lang="scss">
 .login{
   background:url(../assets/bg.jpg) center no-repeat;
+  background-size:cover;
   height:100%;
   background:cover;
   position:relative;

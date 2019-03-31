@@ -12,27 +12,8 @@
 export default {
   methods:{
     quit(){
-       this.axios.get( this.$store.state.globalSettings.apiUrl+'admin/loginOut')
-            .then(res=>{
-                console.log(res);
-                if(res.status==200){
-                  if(res.data.rtnCode==200){
-                      this.$message({
-                        message: '退出系统成功',
-                        type: 'success',
-                        duration:1000
-                      })
-                  }  
-                  //清除当前用户的登录信息
-                  this.$store.commit('signout', '');
-                  //跳转回登录页
-                  setTimeout(()=>{ this.$router.push('/login');},1600);
-                }
-            })
-            .catch(err=>{
-                console.log(err)
-            })
-    
+      sessionStorage.removeItem('token');
+      this.$router.push('/login');
     }
   }
 }

@@ -58,10 +58,22 @@
               <span slot="title">订单列表</span>
             </el-menu-item>
            
-            <el-menu-item index='/admin'>
+            <!-- <el-menu-item index='/admin'>
               <i class="el-icon-setting"></i>
               <span slot="title">管理员</span>
-            </el-menu-item>
+            </el-menu-item> -->
+
+            <el-submenu index='admin'>
+              <template slot="title">
+                <i class="el-icon-star-off"></i>
+                <span>管理员</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index='/admin'>管理员添加</el-menu-item>
+                <el-menu-item index='/admin/reset'>密码修改</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            
           </el-menu>
         </el-aside>
         <!-- 右侧主体 -->
@@ -80,7 +92,7 @@
 
     },
     beforeCreate() {
-      if (!sessionStorage.getItem('adminName')) {
+      if (!sessionStorage.getItem('token')) {
         this.$router.push('/login')
       }
     },

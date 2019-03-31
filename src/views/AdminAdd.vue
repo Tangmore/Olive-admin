@@ -4,15 +4,15 @@
         <el-breadcrumb separator='/'>
             <el-breadcrumb-item :to="{path:'/main'}">管理员</el-breadcrumb-item>
             <el-breadcrumb-item>管理员添加</el-breadcrumb-item>
+
         </el-breadcrumb>
-        <el-button style="margin-bottom:10px;margin-top:20px" :disabled='isadminAdd' type='primary' size='small' plain @click="Ackname">添加管理员信息</el-button>
+        <!-- <el-button style="margin-bottom:10px;margin-top:20px" :disabled='isadminAdd' type='primary' size='small' plain @click="Ackname">添加管理员信息</el-button> -->
         <!-- 修改表单 -->
-        <div class='addForm' v-if='isadminAdd'>
+        <div class='addForm' >
             <div class='editBox' style='width:70%;margin:30px auto;'>
                 <el-form label-width="100px" class="demo-ruleForm">
                     <el-form-item label="管理员名：" prop="name">
-                        <input type="text" placeholder='请输入管理员名' 
-                        class="el-input__inner" @blur='isNameUse' v-model="userInfo.username">
+                        <input type="text" placeholder='请输入管理员名' class="el-input__inner" @blur='isNameUse' v-model="userInfo.userName">
                         <p style="color:red;font-size: 14px" v-show='isError'>{{errorTip}}</p>
                     </el-form-item>
                     <el-form-item label="密码" prop='addr'>
@@ -34,44 +34,49 @@
         data() {
             return {
                 userInfo: {
-                    username: '',
+                    userName: '',
                     password: ''
                 },
                 originUserInfo: {},
                 labelPosition: 'right',
-                isadminAdd: false,
+                // isadminAdd: false,
                 isError: false,
-                errorTip:''
+                errorTip: ''
             }
         },
         methods: {
             //确认添加
             doSubmit() {
-                if (!(this.userInfo.username && this.userInfo.password)) {
+                if (!(this.userInfo.userName && this.userInfo.password)) {
                     this.$message.error('请输入必要信息！');
                     return;
                 }
-                if(this.isError){
+                if (this.isError) {
                     this.$message.error('请保持输入信息格式正确！');
                     return;
                 }
                 this.$confirm('确认添加该管理员？', '提示', { type: 'warning' })
                     .then(() => {
-                        var url = this.$store.state.globalSettings.apiUrl + 'admin/add';
-                        this.axios.post(url, this.userInfo)
+                        var url = this.$store.state.globalSettings.apiUrl + 'managemodule/admin/addAdmin';
+                        this.axios({
+                            method: 'POST',
+                            url: url,
+                            headers: { 'TLADMIN': sessionStorage.getItem('token') },
+                            data: this.userInfo
+                        })
                             .then(res => {
+                                // console.log(res);
                                 if (res.status == 200) {
-                                    if (res.data.rtnCode == 200) {
-                                        this.$message.success(res.data.msg);
-                                        this.userInfo = {};
-                                    }
-                                } else {
-                                    this.$message.error('服务器内部错误！');
+                                    this.$message({
+                                        message: res.data.msg,
+                                        type: 'success',
+                                        duration: 1000
+                                    });
+                                    this.userInfo = {};
                                 }
-                                // console.log(res)
                             })
                             .catch(err => {
-                                this.$message.error('管理员信息添加失败');
+                                console.log(err);
                             })
                     }).catch(() => {
                         this.$message({
@@ -81,53 +86,15 @@
                     })
             },
             isNameUse() {
-                if(!this.userInfo.username){
-                    this.errorTip='用户名不能为空！';
+                if (!this.userInfo.userName) {
+                    this.errorTip = '用户名不能为空！';
                     this.isError = true;
                     return;
                 }
-                var url = this.$store.state.globalSettings.apiUrl + 'admin/getByName?username=' + this.userInfo.username;
-                this.axios.get(url)
-                    .then(res => {
-                        if (res.status == 200) {
-                            if (res.data.rtnCode == 200) {
-                                if (res.data.data) {
-                                    this.isError = true;
-                                    this.errorTip='用户名已被占用！';
-                                } else {
-                                    this.isError = false;
-                                }
-                            }
-                        }
-                    })
             },
             doCancel() {
                 this.userInfo = {}
             },
-            Ackname() {
-                this.$prompt('请输入您的用户名', '提示', { type: 'info' })
-                    .then(({ value }) => {
-                        var url = this.$store.state.globalSettings.apiUrl + 'admin/getByName?username=' + value;
-                        this.axios.get(url)
-                            .then(res => {
-                                if (res.status == 200) {
-                                    if (res.data.rtnCode == 200) {
-                                        if (res.data.data) {
-                                            this.isadminAdd = true;
-                                        } else {
-                                            this.$message.error('您没有权限添加管理员！');
-                                            return;
-                                        }
-                                    }
-                                }
-                            })
-                    }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '已取消用户输入!'
-                        })
-                    })
-            }
         }
     }
 
