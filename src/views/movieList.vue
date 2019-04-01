@@ -16,25 +16,31 @@
     <el-table :data='currentPageData' style="width:100%" stripe border>
       <el-table-column label='id' prop='id' sortable>
       </el-table-column>
-      <el-table-column label='电影名' prop='name'>
+      <el-table-column label='电影名' prop='movieName'>
       </el-table-column>
-      <el-table-column label='电影类型' prop='typename'>
+      <el-table-column label='评分' prop='praise'>
       </el-table-column>
-      <el-table-column label='上映影院' prop='cinemaname'>
-      </el-table-column>
-      <el-table-column label='电影描述' prop='describle'>
+      <el-table-column label='电影类型' prop='fkTypeName'>
       </el-table-column>
       <el-table-column label='主演' prop='starring'>
       </el-table-column>
-      <el-table-column label='影片图片' prop='img'>
+      <el-table-column label='影片时长' prop='filmLength' sortable>
       </el-table-column>
-      <el-table-column label='评分' prop='praise' sortable>
+      <el-table-column label='影片图片' prop='imgUrl'>
+      </el-table-column>
+      <el-table-column label='预告片' prop='trailerUrl'>
+      </el-table-column>
+      <el-table-column label='折扣' prop='discount'>
+      </el-table-column>
+      <el-table-column label='浏览量' prop='browseNum'>
       </el-table-column>
       <el-table-column label='票价' prop='price' sortable>
       </el-table-column>
-      <el-table-column label='上映时间' prop='start_time' :formatter="dateFormat" sortable>
+      <el-table-column label='上映时间' prop='startTime' sortable>
       </el-table-column>
-      <el-table-column label='下架时间' prop='end_time' :formatter="dateFormat" sortable>
+      <el-table-column label='下架时间' prop='endTime' sortable>
+      </el-table-column>
+      <el-table-column label='电影描述' prop='describle'>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
@@ -50,7 +56,7 @@
     <!-- 电影列表分页显示 -->
     <div class="block">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-        :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="infoLength">
+        :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -83,7 +89,7 @@
         // 当前页
         currentPage: 1,
         // 总条数
-        infoLength: 0,
+        total: 0,
         // 电影详情
         ismovieInfoModal: false,
         thismovieDetail: {},
@@ -97,73 +103,53 @@
       // MovieInfoEdit
     },
     mounted() {
-      this.infoInit();
+      this.infoInit(this.pageSize, this.currentPage);
     },
     methods: {
 
       //电影列表初始化
-      infoInit() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getList')
+      infoInit(pageSize, currentPage) {
+        // console.log(pageSize)
+        var url = this.$store.state.globalSettings.apiUrl
+          + 'managemodule/movie/selectPageAdmin';
+        this.axios({
+          method: 'GET',
+          url: url,
+          params: { pageSize: pageSize, currentPage: currentPage }
+        })
           .then(res => {
             // console.log(res);
             if (res.status == 200) {
-              if (res.data.rtnCode == 200) {
-                this.infoAll = res.data.data;
-                this.dividePage();
+              if (res.data.rows) {
+                this.page = res.data.page;
+                this.total = res.data.total;
+                this.currentPageData = res.data.rows;
+                return;
+              } else {
+                this.$message.error(res.data.msg);
               }
-            } else {
-              this.$message.error('服务器内部错误！');
+
             }
           })
           .catch(err => {
-            console.log(err)
+            console.log(err);
           })
-      },
-      //分页
-      dividePage() {
-        this.infoLength = this.infoAll.length;
-        this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
-          this.pageSize, this.currentPage * this.pageSize);
-        this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
-      },
-      // 表格时间内容格式化
-      formatNumber(n) {
-        n = n.toString();
-        return n[1] ? n : '0' + n;
-      },
-      dateFormat(row, column) {
-        var val = row[column.property];
-        if (val == undefined) {
-          return "";
-        }
-        var date = new Date(val);
-        var yy = date.getFullYear();
-        var mm = date.getMonth() + 1;
-        var dd = date.getDay();
-        var hh = date.getHours();
-        var mi = date.getMinutes();
-        var ss = date.getSeconds();
-        var formatdate = [mm, dd].map(this.formatNumber).join('-');
-        var formattime = [hh, mi, ss].map(this.formatNumber).join(':');
-        return yy + '-' + formatdate + ' ' + formattime;
       },
 
       //编辑电影信息
       updateMovieInfo(c, index) {
-        this.$router.push('/movie/edit/'+c.id);
+        this.$router.push('/movie/edit/' + c.id);
       },
       // 获取当前电影信息
       MovieInfoDetail(c, index) {
         this.ismovieInfoModal = true;
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getById?id=' + c.id)
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/movie/selectOneMovie?id=' + c.id)
           .then(res => {
             // console.log(res);
             if (res.status == 200) {
-              if (res.data.rtnCode == 200) {
-                this.thismovieDetail = res.data.data;
-              }
+              this.thismovieDetail = res.data.row;
             } else {
-              this.$message.error('服务器内部错误！');
+              this.$message.error(res.data.msg);
             }
           })
           .catch(err => {
@@ -173,18 +159,18 @@
       },
       //删除当前行电影
       deleteMovie(c, index) {
-         this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
+        this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
           .then(() => {
             var that = this;
-            var url = this.$store.state.globalSettings.apiUrl + 'movie/delete/?id=' + c.id;
-            this.axios.get(url)
+            var url = this.$store.state.globalSettings.apiUrl + 'managemodule/movie/deleteMovie';
+            this.axios.post(url, { id: c.id })
               .then(res => {
-                that.infoAll.splice(index, 1);
+                // that.infoAll.splice(index, 1);
                 this.$message.success(res.data.msg);
-                this.infoInit();
+                this.infoInit(this.pageSize, this.currentPage);
               })
               .catch(err => {
-                this.$message.error('删除电影失败！')
+                console.log(err);
               })
           }).catch(() => {
             this.$message({
@@ -213,16 +199,18 @@
           })
       },
       handleSizeChange(val) {
-        // console.log(`每页 ${val} 条`);
+        this.currentPageData = []
+        this.page = 0;
+        this.total = 0;
+        console.log(`每页 ${val} 条`);
         this.pageSize = val;
-        this.infoInit();
+        this.infoInit(val, this.currentPage);
       },
       handleCurrentChange(val) {
-        // console.log(`当前页: ${val}`);
+        this.currentPageData = []
+        console.log(`当前页: ${val}`);
         this.currentPage = val;
-        this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
-          this.pageSize, this.currentPage * this.pageSize);
-          this.infoInit();
+        this.infoInit(this.pageSize, val);
       },
       // 子传父isshow---个人详情弹出框
       changeInfoShow(flag) {
@@ -242,7 +230,7 @@
 
   .movieInfoModal {
     width: 600px;
-    height:auto;
+    height: auto;
   }
 
   /* .movieInfoEdit {

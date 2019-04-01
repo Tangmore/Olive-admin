@@ -31,6 +31,7 @@ import orderList from './views/OrderList.vue'
 import admin from './views/AdminAdd.vue'
 import adminReset from './views/adminReset.vue'
 import AdminList from './views/AdminList.vue'
+import Mine from './views/Mine.vue'
 
 Vue.use(Router)
 //路由词典
@@ -60,8 +61,9 @@ export default new Router({
         {path:'/orders/list',component:orderList},
 
         {path:'/admin',component:admin},
-        {path:'/Admin/list',component:AdminList},
-        {path:'/admin/reset',component:adminReset}
+        {path:'/admin/list',component:AdminList},
+        {path:'/admin/reset',component:adminReset},
+        {path:'/mine',component:Mine}
       ]
     },
     { path: '*', component: NotFound },
