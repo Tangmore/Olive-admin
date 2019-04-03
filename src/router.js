@@ -20,6 +20,13 @@ import typeList from './views/typeList.vue'
 // 影院
 import cinemaList from './views/cinemaList.vue'
 import cinemaAdd from './views/cinemaAdd.vue'
+  // 影厅
+  import hallList from './views/hallList.vue'
+  import hallAdd from './views/hallAdd.vue'
+  //场次
+  import SceneList from './views/SceneList.vue'
+  import SceneAdd from './views/SceneAdd.vue'
+  import SceneInfoEdit from './views/SceneInfoEdit.vue'
 
 //评论
 import commentList from './views/commentList.vue'
@@ -55,6 +62,11 @@ export default new Router({
 
         {path:'/cinema/list',component:cinemaList},
         {path:'/cinema/add',component:cinemaAdd},
+        {path:'/hall/list',component:hallList},
+        {path:'/hall/add',component:hallAdd},
+        {path:'/scene/list',component:SceneList},
+        {path:'/scene/add',component:SceneAdd},
+        {path:'/scene/edit/:id',component:SceneInfoEdit},
 
         {path:'/comment/list',component:commentList},
 

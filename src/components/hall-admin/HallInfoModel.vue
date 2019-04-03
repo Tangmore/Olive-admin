@@ -2,7 +2,7 @@
   <div class="cinemadetail">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>影院详情</span>
+        <span>影厅详情</span>
         <el-button style="float: right; padding: 3px 0" type="text" icon='el-icon-close' @click='changeIs'></el-button>
       </div>
       <div class="main">
@@ -10,10 +10,13 @@
         <div class='editBox' style='width:80%'>
           <el-form :label-position="labelPosition" label-width="90px">
             <el-form-item label="影院名：">
-              {{info.infoList.cinemaName}}
+              {{info.infoList.hallName}}
             </el-form-item>
-            <el-form-item label="地址：">
-              {{info.infoList.cinemaAddress}}
+            <el-form-item label="所属影院：">
+              {{info.infoList.fkCinemaName}}
+            </el-form-item>
+             <el-form-item label="影院座位：">
+              {{info.infoList.line}}行{{info.infoList.col}}列
             </el-form-item>
           </el-form>
         </div>
@@ -27,7 +30,7 @@
     data() {
       return {
         info: {
-          infoList: { cinemaName: '', cinemaAddress: '' },
+          infoList: { hallName: '', fkCinemaName: '',col:'',line:'' },
         },
         labelPosition: 'right'
       }
@@ -42,7 +45,8 @@
     },
     mounted() {
       // 初始化当前影院信息
-      this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/selectById?id=' + this.id)
+      this.axios.get(this.$store.state.globalSettings.apiUrl + 
+      'managemodule/hall/selectById?id=' + this.id)
         .then(res => {
           this.info.infoList = res.data.row;
         })

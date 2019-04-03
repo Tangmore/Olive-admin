@@ -10,7 +10,7 @@ export default new Vuex.Store({
       JSON.parse(sessionStorage.getItem('adminName')) : null, //当前登录的管理员名
     globalSettings: { //项目的全局设置信息
       apiUrl: 'http://127.0.0.1:8082/', //初始默认值
-      imgUrl:'http://127.0.0.1:83/'
+      // imgUrl:'http://127.0.0.1:83/'
     }
   },
   mutations: {

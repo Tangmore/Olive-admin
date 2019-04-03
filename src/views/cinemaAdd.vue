@@ -10,10 +10,10 @@
     <div class='editBox' style='width:70%;margin:30px auto;'>
       <el-form  label-width="100px" class="demo-ruleForm">
         <el-form-item label="影院名：" prop="name">
-          <el-input type='text' placeholder='请输入影院名称' v-model="userInfo.name"></el-input>
+          <el-input type='text' placeholder='请输入影院名称' v-model="userInfo.cinemaName"></el-input>
         </el-form-item>
         <el-form-item label="影院地址" prop='addr'>
-          <el-input type="text" placeholder="请输入影院地址" v-model="userInfo.addr"></el-input>
+          <el-input type="text" placeholder="请输入影院地址" v-model="userInfo.cinemaAddress"></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -30,8 +30,8 @@
     data() {
       return {
         userInfo: {
-          name: '',
-          addr:''
+          cinemaName: '',
+          cinemaAddress:''
         },
         originUserInfo: {},
         labelPosition: 'right'
@@ -40,27 +40,22 @@
         methods: {
           //确认添加
           doSubmit() {
-            if(!(this.userInfo.name && this.userInfo.addr )){
+            if(!(this.userInfo.cinemaName && this.userInfo.cinemaAddress )){
               this.$message.error('请输入必要信息！');
               return;
             }
             this.$confirm('确认添加该影院？', '提示', { type: 'warning' })
               .then(() => {
-                var url = this.$store.state.globalSettings.apiUrl + 'cinema/add';
+                var url = this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/addCinema';
                 this.axios.post(url, this.userInfo)
                   .then(res => {
                     if (res.status == 200) {
-                      if (res.data.rtnCode == 200) {
                         this.$message.success(res.data.msg);
                         this.userInfo = {};
-                      }
-                    } else {
-                      this.$message.error('服务器内部错误！');
-                    }
-                    // console.log(res)
+                    } 
                   })
                   .catch(err => {
-                    this.$message.error('影院信息添加失败');
+                    console.log(err);
                   })
               }).catch(() => {
                 this.$message({

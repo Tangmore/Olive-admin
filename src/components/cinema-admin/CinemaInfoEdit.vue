@@ -10,10 +10,10 @@
         <div class='editBox' style='width:80%'>
           <el-form :label-position="labelPosition" label-width="90px">
             <el-form-item label="影院名：">
-              <el-input type="text" placeholder="请输入影院名" v-model="info.infoList.name"></el-input>
+              <el-input type="text" placeholder="请输入影院名" v-model="info.infoList.cinemaName"></el-input>
             </el-form-item>
             <el-form-item label="地址：">
-              <el-input type="text" placeholder="请输入影院地址" v-model="info.infoList.addr"></el-input>
+              <el-input type="text" placeholder="请输入影院地址" v-model="info.infoList.cinemaAddress"></el-input>
             </el-form-item>
           </el-form>
         </div>
@@ -31,7 +31,7 @@
     data() {
       return {
         info: {
-          infoList: { name: '', addr: '' },
+          infoList: { cinemaName: '', cinemaAddress: '' },
         },
         labelPosition: 'right'
       }
@@ -41,13 +41,12 @@
       //提交修改
       doSubmit() {
         var that = this;
-        var url = this.$store.state.globalSettings.apiUrl + 'cinema/edit?id=' + this.id;
+        var url = this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/updateCinema?id=' + this.id;
         this.axios.post(url, this.info.infoList)
           .then(res => {
-            this.$message.success('影院信息修改成功！');
+            this.$message.success(res.data.msg);
             this.$bus.$emit('changeCinemaInfo');
             this.changeIs();
-
           })
           .catch(err => {
             this.$message.error('编辑影院失败！')
@@ -61,16 +60,19 @@
     },
     mounted() {
       // 初始化当前影院信息
-      this.axios.get(this.$store.state.globalSettings.apiUrl + 'cinema/getById?id=' + this.id)
+      this.axios.get(this.$store.state.globalSettings.apiUrl +
+       'managemodule/cinema/selectById?id=' + this.id)
         .then(res => {
-          this.info.infoList = res.data.data;
+          console.log(res)
+          this.info.infoList = res.data.row;
         })
         .catch(err => {
-          this.$message.error('获取影院信息失败');
+          console.log(err);
         })
     }
   }
+  
+
 </script>
 <style lang="scss">
- 
 </style>

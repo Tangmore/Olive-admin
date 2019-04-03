@@ -182,17 +182,20 @@
 
       //根据电影名查找电影
       movienameSearch() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getList?name=' + this.searchContnt)
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/movie/selectPageAdmin?map[movieName-like]=' + this.searchContnt)
           .then(res => {
             console.log(res);
             if (res.status == 200) {
-              if (res.data.rtnCode == 200) {
-                this.infoAll = res.data.data;
-                this.dividePage();
+              if (res.data.rows) {
+                this.page = res.data.page;
+                this.total = res.data.total;
+                this.currentPageData = res.data.rows;
+              } else {
+                this.$message.error(res.data.msg);
               }
-            } else {
-              this.$message.error('服务器内部错误！');
-            }
+
+            } 
+            
           })
           .catch(err => {
             console.log(err)

@@ -2,26 +2,27 @@
   <div class="cinemaEditmain">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator='/'>
-      <el-breadcrumb-item :to="{path:'/main'}">影院管理</el-breadcrumb-item>
-      <el-breadcrumb-item>影院列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{path:'/main'}">影厅管理</el-breadcrumb-item>
+      <el-breadcrumb-item>影厅列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 条件查询 -->
     <div class="searchBtn">
-      <el-input placeholder="请输入影院名" v-model="searchContnt" size="small" clearable>
+      <el-input placeholder="请输入影厅名" v-model="searchContnt" size="small" clearable>
         <el-button slot="append" size="small" @click='cinemanameSearch'>搜索</el-button>
       </el-input>
     </div>
-    <!-- 影院列表 -->
+    <!-- 影厅列表 -->
     <el-table :data='currentPageData' style="width:100%" stripe border>
       <el-table-column label='id' prop='id' sortable>
       </el-table-column>
-      <el-table-column label='影院名' prop='cinemaName'>
+      <el-table-column label='影厅名' prop='hallName'>
       </el-table-column>
-      <el-table-column label='影院地址' prop='cinemaAddress'>
+      <el-table-column label='影院名称' prop='fkCinemaName'>
       </el-table-column>
-
-      <!-- <el-table-column label='评分' prop='praise' sortable>
-      </el-table-column> -->
+        <el-table-column label='行数' prop='line'>
+      </el-table-column>
+         <el-table-column label='列数' prop='col'>
+      </el-table-column>
 
       <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
@@ -34,26 +35,28 @@
       </el-table-column>
     </el-table>
 
-    <!-- 影院列表分页显示 -->
+    <!-- 影厅列表分页显示 -->
     <div class="block">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-        :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        :page-sizes="[6, 8, 10, 20]" 
+        :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
-    <!-- 影院详情模态框 -->
-    <CinemaInfoModel class="cinemaInfoModal" v-if='iscinemaInfoModal' :id='thiscinemaID' @tellShow='changeInfoShow' />
+    <!-- 影厅详情模态框 -->
+    <HallInfoModel class="cinemaInfoModal" v-if='iscinemaInfoModal' :id='thiscinemaID' @tellShow='changeInfoShow' />
 
-    <!-- 影院信息编辑模态框 -->
-    <CinemaInfoEdit class="cinemaInfoEdit" v-if='iscinemaInfoEdit' :id='thiscinemaID' @tellEditShow='changeEditShow' />
+    <!-- 影厅信息编辑模态框 -->
+    <HallInfoEdit class="cinemaInfoEdit" v-if='iscinemaInfoEdit' 
+    :id='thiscinemaID' @tellEditShow='changeEditShow' />
 
   </div>
 
   </div>
 </template>
 <script>
-  import CinemaInfoModel from '../components/cinema-admin/CinemaInfoModel.vue'
-  import CinemaInfoEdit from '../components/cinema-admin/CinemaInfoEdit.vue'
+  import HallInfoModel from '../components/hall-admin/HallInfoModel.vue'
+  import HallInfoEdit from '../components/hall-admin/HallInfoEdit.vue'
   export default {
     data() {
       return {
@@ -70,38 +73,38 @@
         currentPage: 1,
         // 总条数
         total: 0,
-        // 影院详情
+        // 影厅详情
         iscinemaInfoModal: false,
         thiscinemaDetail: {},
-        // 影院信息编辑
+        // 影厅信息编辑
         iscinemaInfoEdit: false,
         thiscinemaID: ""
       }
     },
     components: {
-      CinemaInfoModel,
-      CinemaInfoEdit
+      HallInfoModel,
+      HallInfoEdit
     },
     mounted() {
       this.$bus.$on('changeCinemaInfo', () => {
-        this.infoInit();
+        infoInit(this.pageSize,this.currentPage);
       })
-      this.infoInit();
+     this.infoInit(this.pageSize,this.currentPage);
     },
     methods: {
       infoInit(pageSize, currentPage) {
         var url = this.$store.state.globalSettings.apiUrl
-          + 'managemodule/cinema/selectPageAdmin';
+          + 'managemodule/hall/selectPageHall';
         this.axios({
           method: 'GET',
           url: url,
           params: { pageSize: pageSize, currentPage: currentPage }
         })
           .then(res => {
-            // console.log(res);
+            console.log(res);
             if (res.status == 200) {
               if (res.data.rows) {
-                this.page = res.data.page;
+                // this.page = res.data.page;
                 this.total = res.data.total;
                 this.currentPageData = res.data.rows;
                 return;
@@ -115,7 +118,7 @@
             console.log(err);
           })
       },
-      //编辑影院信息
+      //编辑影厅信息
       updatecinemaInfo(c, index) {
         if (this.iscinemaInfoModal) {
           this.$message({
@@ -128,7 +131,7 @@
         this.iscinemaInfoEdit = true;
         this.thiscinemaID = c.id;
       },
-      // 获取当前影院信息
+      // 获取当前影厅信息
       cinemaInfoDetail(c, index) {
         if (this.iscinemaInfoEdit) {
           this.$message({
@@ -140,14 +143,12 @@
         this.iscinemaInfoModal = true;
         this.thiscinemaID = c.id;
 
-
       },
-      //删除当前行影院
+      //删除当前行影厅
       deletecinema(c, index) {
         this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
           .then(() => {
-            var that = this;
-            var url = this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/deleteCinema';
+            var url = this.$store.state.globalSettings.apiUrl + 'managemodule/hall/deleteHall';
             this.axios.post(url,{id:c.id})
               .then(res => {
                 this.$message.success(res.data.msg);
@@ -164,9 +165,9 @@
           })
       },
 
-      //根据影院名查找影院
+      //根据影厅名查找影厅
       cinemanameSearch() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/selectPageAdmin?map[cinemaName-like]=' + this.searchContnt)
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/selectPageAdmin?map[hallName-like]=' + this.searchContnt)
           .then(res => {
             if (res.status == 200) {
               if (res.data.rows) {
@@ -210,7 +211,7 @@
 </script>
 <style lang='scss'>
   @import url('../assets/scss/common.scss');
-  /*影院详情弹出框*/
+  /*影厅详情弹出框*/
 
   .cinemaInfoModal {
     width: 600px;

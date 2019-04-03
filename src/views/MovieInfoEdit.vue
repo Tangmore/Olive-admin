@@ -3,54 +3,60 @@
     <!-- 修改表单 -->
     <el-form :label-position="labelPosition" label-width="90px" style='width:80%;margin:30px auto;'>
       <el-form-item label="影名：">
-        {{info.infoList.name}}
-        <!-- <el-input type="text" placeholder="请输入电影名" v-model="info.infoList.name" ></el-input> -->
+        {{info.infoList.movieName}}
+      </el-form-item>
+      <el-form-item label="评分：">
+        {{info.infoList.praise}}
+      </el-form-item>
+      <el-form-item label="电影类型：">
+        <el-select v-model="info.infoList.fkTypeId" clearable placeholder="请选择电影类型">
+          <el-option v-for="item in type_options" :key="item.id" :label="item.typeName" :value="item.id">
+            {{item.typeName}}
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="主演：">
+        <el-input type="text" placeholder="请输入电影主演" v-model="info.infoList.starring"></el-input>
+      </el-form-item>
+      <el-form-item label="影片时长:">
+        <el-input type="text" placeholder="请输入电影名" v-model="info.infoList.filmLength"></el-input>
       </el-form-item>
 
-      <el-form-item label="影片：">
+      <el-form-item label="影片图片：">
         <el-upload class="img-uploader" :action="uploadAction" :show-file-list='true' :before-upload='beforeImgUpload' :before-remove='beforeRemove'
-          :on-success='handleSuccess' name='movieImg' :limit='3'>
-          <!-- <img  src="" class="img"> -->
+          :on-success='handleSuccess' :limit='1'>
           <i class="el-icon-plus img-uploader-icon"></i>
           <span slot="tip" class="el-upload__tip" style="margin-left: 20px">只能上传gif/jpg/jpeg/png,且不能超过500kb</span>
         </el-upload>
       </el-form-item>
-      <el-form-item label="主演：">
-        {{info.infoList.starring}}
+
+      <el-form-item label="预告片：">
+        <el-upload class="avatar-uploader" :action="videoUrl" accept='.mp4,.ogg,.webm' :show-file-list="true" :before-upload="beforeUploadVideo"
+          :on-success="handleVideoSuccess" :on-progress="uploadVideoProcess">
+          <video v-if="Video !='' && videoFlag == false" :src="Video" width="350" height="180" controls="controls"></video>
+          <i class="el-icon-plus avatar-uploader-icon"></i>
+
+        </el-upload>
       </el-form-item>
 
-      <el-form-item label="类型：">
-        <el-select v-model="info.infoList.typeid" clearable placeholder="请选择电影类型">
-          <el-option v-for="item in type_options" :key="item.id" :label="item.name" :value="item.id">{{item.name}}
-          </el-option>
-        </el-select>
+      <el-form-item label="折扣：">
+        <el-input type="text" placeholder="请输入电影折扣" v-model="info.infoList.discount"></el-input>
       </el-form-item>
-      <el-form-item label="影院：">
-        <!-- <el-checkbox-group v-model='info.infoList.cinemaid'>
-          <el-checkbox v-for='item in cinema_options' :key='item.id' :label="item.name" name="cinemaid" :value='item.name'>{{item.name}}</el-checkbox>
-        </el-checkbox-group> -->
-        <el-select v-model="info.infoList.cinemaid" clearable placeholder="请选择上映影院">
-            <el-option v-for="item in cinema_options" :key="item.id" :label="item.name" :value="item.id">{{item.name}}
-            </el-option>
-          </el-select>
-      </el-form-item>
-
       <el-form-item label="票价：">
         <el-input-number size="medium" v-model="info.infoList.price"></el-input-number>
       </el-form-item>
       <el-form-item label="时间：">
         <el-col :span="7">
-          <el-date-picker type="date" placeholder="选择日期" v-model='info.infoList.start_time' style="width: 100%;"></el-date-picker>
+          <el-date-picker type="datetime" placeholder="选择日期" v-model='info.infoList.startTime' value-format='yyyy-MM-dd HH:mm:ss' style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="1">-</el-col>
         <el-col :span="7">
-          <el-date-picker type="date" placeholder="选择日期" v-model='info.infoList.end_time' style="width: 100%;"></el-date-picker>
+          <el-date-picker type="datetime" placeholder="选择日期" v-model='info.infoList.endTime' value-format='yyyy-MM-dd HH:mm:ss' style="width: 100%;"></el-date-picker>
         </el-col>
       </el-form-item>
 
-      <el-form-item label="描述：">
-        <el-input type="textarea" style="width:74%" :autosize="{minRows:3}" resize='none' v-model="info.infoList.describle"
-         placeholder="请输入电影简介"></el-input>
+      <el-form-item label="电影描述：">
+        <el-input type="textarea" style="width:74%" :autosize="{minRows:3}" resize='none' v-model="info.infoList.describle" placeholder="请输入电影简介"></el-input>
       </el-form-item>
       <div style="text-align: center;margin-right: 100px;">
         <el-button type='primary' @click="doSubmit">提交</el-button>
@@ -68,73 +74,78 @@
       return {
         info: {
           infoList: {
-            name: '', typeid: '', describle: '', starring: '', cinemaid: '',
-            price: '', start_time: '', end_time: ''
+            movieName: '', praise: '',
+            fkTypeId: '', starring: '',
+            filmLength: '', imgUrl: '',
+            trailerUrl: '', discount: '',
+            price: '', startTime: '',
+            endTime: '', describle: ''
           },
-        },
 
-        // originmovieInfo: [],
+        },
+        videoFlag: false,      //刚开始的时候显示为flase
+        videoUploadPercent: '0%',  //进度条刚开始的时候为0%
+        Video: '',
+
         labelPosition: 'right',
-        uploadAction: this.$store.state.globalSettings.imgUrl + 'movie/infoImg',
+        uploadAction: this.$store.state.globalSettings.apiUrl + 'filemodule/file/uploadFile',
+        videoUrl: this.$store.state.globalSettings.apiUrl + 'filemodule/file/uploadVideo',
         basePath: "",
         // value4: "",
         type_options: [],
         cinema_options: [],
         cinemaArr: [],
-        // cinemaObj: [],
-        // options: [{
-        //   value: '选项1',
-        //   label: '黄金糕'
-        // }],
         imgArr: []
       }
     },
     props: ['id'],
     mounted() {
-
       // 初始化当前电影信息
       this.initTable();
       //初始化电影类型下拉
-      this.axios.get(this.$store.state.globalSettings.apiUrl + 'type/getList')
+      this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/type/selectAllType')
         .then(res => {
           console.log(res);
-          this.type_options=res.data.data;
+          this.type_options = res.data.rows;
 
         })
         .catch(err => {
-          // this.$message.error('获取电影类型失败');
           console.log(err);
         });
-        //初始化电影院复选框
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'cinema/getList')
-        .then(res => {
-          console.log(res);
-          this.cinema_options=res.data.data;
 
-        })
-        .catch(err => {
-          // this.$message.error('获取电影类型失败');
-          console.log(err);
-        });
     },
     methods: {
+
+      beforeUploadVideo(file) {          //视频上传之前判断他的大小
+        const isLt10M = file.size / 1024 / 1024 < 2000;
+        if (!isLt10M) {
+          this.$message.error('上传视频大小不能超过2000MB哦!');
+          return false;
+        }
+      },
+      uploadVideoProcess(event, file, fileList) {    //视频上传的时候获取上传进度传给进度条
+        this.videoFlag = true;
+        this.videoUploadPercent = parseInt(file.percentage);
+        console.log(this.videoUploadPercent)
+      },
+      handleVideoSuccess(res, file) {           //视频上传成功之后返回视频地址
+        console.log(res.row)
+        this.$message.success(res.msg);
+        this.info.infoList.trailerUrl = res.row;
+      },
+
       initTable() {
         var id = this.$route.params.id;
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'movie/getById?id=' + id)
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/movie/selectOneMovie?id=' + id)
           .then(res => {
-            let data = res.data.data;
-            for (let i in data) {
-              if (data[i] == null) {
-                data[i] = '';
-              }
+            if (res.status == 200) {
+              this.info.infoList = res.data.row;
+            } else {
+              this.$message.error(res.data.msg);
             }
-            this.info.infoList = data;
-            // if (data.img) {
-            //   this.imageUrl = this.$store.state.globalSettings.imgUrl + data.img;
-            // }
           })
           .catch(err => {
-            this.$message.error('获取电影信息失败');
+            console.log(err);
           })
       },
       // 验证上传图片的格式
@@ -163,30 +174,26 @@
       },
       //上传成功后 客户端得到响应消息
       handleSuccess(res, file) {
-        this.basePath = res.fileName;
-        this.info.infoList.img = res.fileName;
-        //把上传的图片编码为DataURL字符串
-        this.imgArr.push(res.fileName);
-        this.info.infoList.img = this.imgArr.join('、');
+        // console.log(res)
+        this.$message.success(res.msg);
+        this.info.infoList.imgUrl = res.row;
       },
       //提交修改
       doSubmit() {
         // console.log(this.cinema_options)
-        console.log(this.info.infoList.typename);
-        this.info.infoList.cinemaname=this.cinema_options.join('、');
+        console.log(this.info.infoList.trailerUrl);
         var id = this.$route.params.id;
-        // cnnsole.log(111111)
-        var url = this.$store.state.globalSettings.apiUrl + 'movie/edit?id=' + id;
+        var url = this.$store.state.globalSettings.apiUrl + 'managemodule/movie/updateMovie?id=' + id;
         this.axios.post(url, this.info.infoList)
           .then(res => {
-            this.$message.success('电影信息修改成功！');
+            this.$message.success(res.data.msg);
             this.$router.push('/movie/list');
           })
           .catch(err => {
-            this.$message.error('编辑电影失败！')
+            console.log(err);
           })
       },
-      doCancel(){
+      doCancel() {
         this.initTable();
       }
     }

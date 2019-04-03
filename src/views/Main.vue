@@ -44,6 +44,28 @@
                 <el-menu-item-group>
                   <el-menu-item index='/cinema/list'>影院列表</el-menu-item>
                   <el-menu-item index='/cinema/add'>添加影院</el-menu-item>
+
+                  <el-submenu index='hall'>
+                      <template slot="title">
+                        <i class="el-icon-star-off"></i>
+                        <span>影厅管理</span>
+                      </template>
+                      <el-menu-item-group>
+                        <el-menu-item index='/hall/list'>影厅列表</el-menu-item>
+                        <el-menu-item index='/hall/add'>添加影厅</el-menu-item>
+                      </el-menu-item-group>
+                    </el-submenu>
+
+                    <el-submenu index='scene'>
+                        <template slot="title">
+                          <i class="el-icon-star-off"></i>
+                          <span>场次管理</span>
+                        </template>
+                        <el-menu-item-group>
+                          <el-menu-item index='/scene/list'>场次列表</el-menu-item>
+                          <el-menu-item index='/scene/add'>添加场次</el-menu-item>
+                        </el-menu-item-group>
+                      </el-submenu>
                 </el-menu-item-group>
               </el-submenu>
 
