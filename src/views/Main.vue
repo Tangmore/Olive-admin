@@ -8,83 +8,69 @@
       <el-container>
         <!-- 左侧导航 -->
         <el-aside>
-          <el-menu :unique-opened='true' 
-          :router='true' 
-          :default-openeds="defaultOpeneds" 
-          :default-active="defaultActive">
-          <el-submenu index='user'>
+          <el-menu :unique-opened='true' :router='true' :default-openeds="defaultOpeneds" :default-active="defaultActive">
+
+            <el-menu-item index='/user/list'>
+              <i class="el-icon-document"></i>
+              <span slot="title">用户列表</span>
+            </el-menu-item>
+
+            <el-submenu index='movie'>
               <template slot="title">
-                <i class="el-icon-time"></i>
-                <span>用户管理</span>
+                <i class="el-icon-location"></i>
+                <span>电影信息</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index='/user/list'>用户列表</el-menu-item>
-                <!-- 提供编辑用户信息页面 -->
-                <el-menu-item index='/user/add'>添加用户</el-menu-item>
+                <el-menu-item index='/movie/list'>电影列表</el-menu-item>
+                <el-menu-item index='/movie/add'>添加电影</el-menu-item>
+                <el-menu-item index='/movie/type'>电影类型</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 
-            <el-submenu index='movie'>
-                <template slot="title">
-                  <i class="el-icon-location"></i>
-                  <span>电影信息</span>
-                </template>
-                <el-menu-item-group>
-                  <el-menu-item index='/movie/list'>电影列表</el-menu-item>
-                  <el-menu-item index='/movie/add'>添加电影</el-menu-item>
-                  <el-menu-item index='/movie/type'>电影类型</el-menu-item>
-                </el-menu-item-group>
-              </el-submenu>
-
             <el-submenu index='cinema'>
-                <template slot="title">
-                  <i class="el-icon-star-off"></i>
-                  <span>影院管理</span>
-                </template>
-                <el-menu-item-group>
-                  <el-menu-item index='/cinema/list'>影院列表</el-menu-item>
-                  <el-menu-item index='/cinema/add'>添加影院</el-menu-item>
+              <template slot="title">
+                <i class="el-icon-star-off"></i>
+                <span>影院管理</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index='/cinema/list'>影院列表</el-menu-item>
+                <el-menu-item index='/cinema/add'>添加影院</el-menu-item>
 
-                  <el-submenu index='hall'>
-                      <template slot="title">
-                        <i class="el-icon-star-off"></i>
-                        <span>影厅管理</span>
-                      </template>
-                      <el-menu-item-group>
-                        <el-menu-item index='/hall/list'>影厅列表</el-menu-item>
-                        <el-menu-item index='/hall/add'>添加影厅</el-menu-item>
-                      </el-menu-item-group>
-                    </el-submenu>
+                <el-submenu index='hall'>
+                  <template slot="title">
+                    <i class="el-icon-star-off"></i>
+                    <span>影厅管理</span>
+                  </template>
+                  <el-menu-item-group>
+                    <el-menu-item index='/hall/list'>影厅列表</el-menu-item>
+                    <el-menu-item index='/hall/add'>添加影厅</el-menu-item>
+                  </el-menu-item-group>
+                </el-submenu>
 
-                    <el-submenu index='scene'>
-                        <template slot="title">
-                          <i class="el-icon-star-off"></i>
-                          <span>场次管理</span>
-                        </template>
-                        <el-menu-item-group>
-                          <el-menu-item index='/scene/list'>场次列表</el-menu-item>
-                          <el-menu-item index='/scene/add'>添加场次</el-menu-item>
-                        </el-menu-item-group>
-                      </el-submenu>
-                </el-menu-item-group>
-              </el-submenu>
-
+                <el-submenu index='scene'>
+                  <template slot="title">
+                    <i class="el-icon-star-off"></i>
+                    <span>场次管理</span>
+                  </template>
+                  <el-menu-item-group>
+                    <el-menu-item index='/scene/list'>场次列表</el-menu-item>
+                    <el-menu-item index='/scene/add'>添加场次</el-menu-item>
+                  </el-menu-item-group>
+                </el-submenu>
+              </el-menu-item-group>
+            </el-submenu>
+<!-- 
             <el-menu-item index='/comment/list'>
               <i class="el-icon-document"></i>
               <span slot="title">评论列表</span>
-            </el-menu-item>
+            </el-menu-item> -->
 
             <el-menu-item index='/orders/list'>
               <i class="el-icon-view"></i>
               <!-- 订单详情 -->
               <span slot="title">订单列表</span>
             </el-menu-item>
-           
-            <!-- <el-menu-item index='/admin'>
-              <i class="el-icon-setting"></i>
-              <span slot="title">管理员</span>
-            </el-menu-item> -->
-
+ 
             <el-submenu index='admin'>
               <template slot="title">
                 <i class="el-icon-star-off"></i>
@@ -97,7 +83,7 @@
                 <el-menu-item index='/mine'>我的</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            
+
           </el-menu>
         </el-aside>
         <!-- 右侧主体 -->
@@ -182,23 +168,23 @@
       /*横向放置的手机和竖向放置的平板之间的分辨率*/
       @media screen and (max-width:767px) {
         .el-aside {
-        width: 150px !important;
+          width: 150px !important;
+        }
       }
-      }
-    
 
-    /*竖向放置的手机以及分别率*/
-    @media screen and (max-width: 480px) {
-      .el-aside {
-        width: 120px !important;
-      }
-      .el-menu-item, 
-      .el-submenu__title span{
-        font-size: 12px;
-      
+
+      /*竖向放置的手机以及分别率*/
+      @media screen and (max-width: 480px) {
+        .el-aside {
+          width: 120px !important;
+        }
+        .el-menu-item,
+        .el-submenu__title span {
+          font-size: 12px;
+
+        }
       }
     }
-  }
 
   }
 </style>

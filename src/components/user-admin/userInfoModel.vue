@@ -10,15 +10,11 @@
                     {{userDetail.name}}
                 </el-form-item>
                 <el-form-item label="头像：">
-                    <img :src="userDetail.img?userDetail.img:''" alt="" style="width: 100px;height: 100px;vertical-align:top; ">
+                  {{userDetail.imgUrl}}
+                    <!-- <img :src="userDetail.img?userDetail.img:''" alt="" style="width: 100px;height: 100px;vertical-align:top; "> -->
                 </el-form-item>
                 <el-form-item label="手机号：">
                     {{userDetail.phone}}
-                </el-form-item>
-                <el-form-item label="爱好：">
-                    <div class="discrible">
-                        {{userDetail.hobby}}
-                    </div>
                 </el-form-item>
             </el-form>
         </el-card>

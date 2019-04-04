@@ -61,11 +61,10 @@
         pageSize: 6,
         // 当前页
         currentPage: 1,
-        // 总条数
-        infoLength: 0,
         // 评论详情
         isuserInfoModal: false,
-        thiscommentDetail: {}
+        thiscommentDetail: {},
+        total:0
       }
     },
 
@@ -74,35 +73,40 @@
     
     },
     mounted() {
-      this.$bus.$on('changeUserInfo', () => {
-        this.infoInit();
+        this.$bus.$on('changeorderInfo', () => {
+        this.infoInit(this.pageSize, this.currentPage);
       })
-      this.infoInit();
+      this.infoInit(this.pageSize, this.currentPage);
     },
     methods: {
       //评论列表初始化
-      infoInit() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'comment/getList')
+        infoInit(pageSize, currentPage) {
+        // console.log(pageSize)
+        var url = this.$store.state.globalSettings.apiUrl
+          + 'managemodule/orders/adminSelectPageOrder';
+        this.axios({
+          method: 'GET',
+          url: url,
+          params: { pageSize: pageSize, currentPage: currentPage }
+        })
           .then(res => {
             console.log(res);
             if (res.status == 200) {
-              if (res.data.rtnCode == 200) {
-                // this.data.data.comment=this.data.data.comment.slice(0,14);
-                for(var item of res.data.data){
-                  item.comment=item.comment.slice(0,14)+'...';
-                }
-                this.infoAll = res.data.data;
-                this.dividePage();
+              if (res.data.rows) {
+                this.page = res.data.page;
+                this.total = res.data.total;
+                this.currentPageData = res.data.rows;
+                return;
+              } else {
+                this.$message.error(res.data.msg);
               }
-            } else {
-              this.$message.error('服务器内部错误！');
             }
           })
           .catch(err => {
-            console.log(err)
+            console.log(err);
           })
       },
-     
+  
       // 获取当前评论信息
       UserInfoDetail(c, index) {
         if (this.isuserInfoEdit) {
@@ -170,24 +174,19 @@
             console.log(err)
           })
       },
-      //分页
-      dividePage() {
-        this.infoLength = this.infoAll.length;
-        this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
-          this.pageSize, this.currentPage * this.pageSize);
-        this.totalPage = Math.ceil(this.infoAll.length / this.pageSize);
-      },
-      handleSizeChange(val) {
-        // console.log(`每页 ${val} 条`);
+       handleSizeChange(val) {
+        this.currentPageData = []
+        this.page = 0;
+        this.total = 0;
+        console.log(`每页 ${val} 条`);
         this.pageSize = val;
-        this.infoInit();
+        this.infoInit(val, this.currentPage);
       },
       handleCurrentChange(val) {
-        // console.log(`当前页: ${val}`);
+        this.currentPageData = []
+        console.log(`当前页: ${val}`);
         this.currentPage = val;
-        this.currentPageData = this.infoAll.slice((this.currentPage - 1) *
-          this.pageSize, this.currentPage * this.pageSize);
-          this.infoInit();
+        this.infoInit(this.pageSize, val);
       },
       // 子传父isshow---个人详情弹出框
       changeInfoShow(flag) {
