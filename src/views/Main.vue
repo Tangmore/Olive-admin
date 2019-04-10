@@ -7,7 +7,8 @@
       </el-header>
       <el-container style='height:100%'>
         <!-- 左侧导航 -->
-        <el-aside >
+        <el-aside 
+        >
           <el-menu :unique-opened='true' :router='true' :default-openeds="defaultOpeneds" :default-active="defaultActive">
 
             <el-menu-item index='/user/list'>
