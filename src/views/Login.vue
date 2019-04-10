@@ -13,8 +13,8 @@
            
            </el-form>  
            <div style='text-align:center'>
-               <el-button type="primary" @click="doLogin" >登录</el-button>
-               <el-button @click="doCancel">取消</el-button>
+               <el-button class='login-btn' @click="doLogin" style='color:#aadae6'>登录</el-button>
+               <el-button @click="doCancel" style='background:transparent;color:#aadae6'>取消</el-button>
             </div>
          </div>
     </el-card>
@@ -35,11 +35,6 @@ export default {
   },
   methods:{
     doLogin(){
-      // let formData={
-      //   "username":this.formData.username,
-      //   "password":this.formData.password
-      // }
-      // console.log(this.formData.userName)
        if(!this.formData.userName || !this.formData.password){
                     this.$message({
                       message: '用户名和密码不能为空',
@@ -104,18 +99,19 @@ created() {
    bottom:0;
    right:0;
    margin:auto;
-   background:rgba(0,0,0,.2) !important;
+   background:#fff !important;
    border:none;
    .el-card__header{
       text-align: center;
-      color:#fff;
+      color:#aadae6;
+      font-weight:bold;
     }
     .el-form-item__label{
-      color:#fff;
+      color:#999;
     }
     .el-input__inner{
       background-color:transparent;
-      color:#fff;
+      color:#999;
     }
  }
 
@@ -147,6 +143,9 @@ created() {
       width: 300px;
       height:260px;
    }
+}
+.login-btn{
+  background:transparent;
 }
  
 }

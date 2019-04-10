@@ -5,7 +5,7 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
-// axios.defaults.baseURL='http://127.0.0.1:8090/';
+// axios.defaults.baseURL='http://127.0.0.1:8082/';
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI)  //注册ElementUI
@@ -36,27 +36,10 @@ Vue.filter('dataTime',(val)=>{
   var hh=date.getHours();
   var mi=date.getMinutes();
   var ss=date.getSeconds();
-  // mm=mm>9?mm:'0'+mm;
-  // dd=dd>9?dd:'0'+dd;
-  // hh=hh>9?hh:'0'+hh;
-  // mi=mi>9?mi:'0'+mi;
-  // ss=ss>9?ss:'0'+ss;
   var formatdate=[mm,dd].map(formatNumber).join('-');
   var formattime=[hh,mi,ss].map(formatNumber).join(':');
   return yy+'-'+formatdate+' '+formattime;
 })
-Vue.filter('currency',(val)=>{
-  //把int转换为xx.yy
-  return '￥'+ val.toFixed(2);
-})
-//座位状态转换
-Vue.filter('tableStatus',(val)=>{
-  if(val==1) return '空闲';
-  if(val==2) return '预定';
-  if(val==3) return '占用';
-  else return '其他';
-})
-
 new Vue({
   router,
   store,

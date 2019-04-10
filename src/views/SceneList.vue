@@ -96,7 +96,7 @@
             infoInit(pageSize, currentPage) {
               // console.log(pageSize)
               var url = this.$store.state.globalSettings.apiUrl
-                + 'managemodule/scene/selectPageScene';
+                + 'managemodule/scene/selectPageSceneAdmin';
               this.axios({
                 method: 'GET',
                 url: url,

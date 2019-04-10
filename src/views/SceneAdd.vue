@@ -153,7 +153,7 @@
                     })
             },
             doCancel() {
-                this.initTable();
+                this.info.infoList={};
             }
         }
     }

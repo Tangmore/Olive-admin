@@ -11,9 +11,9 @@
       <el-form-item label="影名：">
         <el-input type="text" placeholder="请输入电影名称" v-model="info.infoList.movieName"></el-input>
       </el-form-item>
-      <el-form-item label="评分：">
+      <!-- <el-form-item label="评分：">
         <el-input type="text" placeholder="请输入电影主演" v-model="info.infoList.praise"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="电影类型：">
         <el-select v-model="info.infoList.fkTypeId" clearable placeholder="请选择电影类型">
           <el-option v-for="item in type_options" :key="item.id" :label="item.typeName" :value="item.id">
@@ -80,7 +80,7 @@
       return {
         info: {
           infoList: {
-            movieName: '', praise: '',
+            movieName: '',
             fkTypeId: '', starring: '',
             filmLength: '', imgUrl: '',
             trailerUrl: '', discount: '',

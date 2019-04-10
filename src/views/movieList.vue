@@ -40,8 +40,8 @@
       </el-table-column>
       <el-table-column label='下架时间' prop='endTime' sortable>
       </el-table-column>
-      <el-table-column label='电影描述' prop='describle'>
-      </el-table-column>
+      <!-- <el-table-column label='电影描述' prop='describle'>
+      </el-table-column> -->
       <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
@@ -54,7 +54,7 @@
     </el-table>
 
     <!-- 电影列表分页显示 -->
-    <div class="block">
+    <div class="container block">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
         :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
@@ -111,7 +111,7 @@
       infoInit(pageSize, currentPage) {
         // console.log(pageSize)
         var url = this.$store.state.globalSettings.apiUrl
-          + 'managemodule/movie/selectPageAdmin';
+          + 'managemodule/movie/selectPageMovie';
         this.axios({
           method: 'GET',
           url: url,
@@ -182,7 +182,7 @@
 
       //根据电影名查找电影
       movienameSearch() {
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/movie/selectPageAdmin?map[movieName-like]=' + this.searchContnt)
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/movie/selectPageMovie?map[movieName-like]=' + this.searchContnt+'&map[comment-like]=' + this.searchContnt)
           .then(res => {
             console.log(res);
             if (res.status == 200) {

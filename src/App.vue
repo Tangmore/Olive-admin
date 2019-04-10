@@ -5,16 +5,7 @@
 </template>
 <script>
 export default {
-   mounted(){
-    //    this.axios.get(this.$store.state.globalSettings.apiUrl+'/admin/settings')
-    //    .then(res=>{
-    //        console.log(res)
-    //        this.$store.commit('setGlobalSettings',res.data)
-    //    }) 
-    //    .catch(err=>{
-    //        console.log(err)
-    //    })
-   }
+  
 }
 </script>
 <style lang="scss">
