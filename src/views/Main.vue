@@ -5,9 +5,9 @@
       <el-header height='60px'>
         <MainHeader />
       </el-header>
-      <el-container>
+      <el-container style='height:100%'>
         <!-- 左侧导航 -->
-        <el-aside>
+        <el-aside >
           <el-menu :unique-opened='true' :router='true' :default-openeds="defaultOpeneds" :default-active="defaultActive">
 
             <el-menu-item index='/user/list'>
@@ -59,11 +59,6 @@
                 </el-submenu>
               </el-menu-item-group>
             </el-submenu>
-<!-- 
-            <el-menu-item index='/comment/list'>
-              <i class="el-icon-document"></i>
-              <span slot="title">评论列表</span>
-            </el-menu-item> -->
 
             <el-menu-item index='/orders/list'>
               <i class="el-icon-view"></i>
@@ -87,7 +82,7 @@
           </el-menu>
         </el-aside>
         <!-- 右侧主体 -->
-        <el-main>
+        <el-main >
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -150,19 +145,20 @@
       .el-aside {
         padding-top: 20px;
         font-weight: bold;
-
+        // background:#2e3f56;
+        height:auto;
       }
 
       /*大屏幕*/
       @media screen and (min-width: 1200px) {
         .el-aside {
-          width: 200px !important;
+          width: 210px !important;
         }
       }
       /*平板电脑与小屏电脑之间的分辨率*/
       @media screen and (min-width: 768px) and (max-width:1200px) {
         .el-aside {
-          width: 200px !important;
+          width: 210px !important;
         }
       }
       /*横向放置的手机和竖向放置的平板之间的分辨率*/
