@@ -4,12 +4,16 @@
         <el-form :label-position="labelPosition" label-width="90px" style='width:80%;margin:30px auto;'>
             <el-form-item label="时间：">
                 <el-col :span="7">
-                    <el-date-picker type="datetime" placeholder="开始时间"   v-model='info.infoList.startTime' value-format='yyyy-MM-dd HH:mm:ss' style="width: 100%;"></el-date-picker>
+                    <el-date-picker type="datetime" placeholder="开始时间" 
+                      v-model='info.infoList.startTime' 
+                      value-format='yyyy-MM-dd HH:mm:ss'
+                      :picker-options='pickerOption'
+                       style="width: 100%;"></el-date-picker>
                 </el-col>
                 <!-- <el-col class="line" :span="1">-</el-col> -->
-                <el-col :span="7" v-show='endTimeHide'> 
+                <!-- <el-col :span="7" v-show='endTimeHide'> 
                     <el-date-picker type="datetime" placeholder="结束时间" v-model='info.infoList.endTime' value-format='yyyy-MM-dd HH:mm:ss' style="width: 100%;"></el-date-picker>
-                </el-col>
+                </el-col> -->
             </el-form-item>
             <el-form-item label="电影：">
                 <el-select v-model="info.infoList.fkMovieId" @change='getMovieEnd' clearable placeholder="请选择电影">
@@ -61,7 +65,12 @@
                 movie_options: [],
                 cinema_options: [],
                 hall_options: [],
-                endTimeHide:false
+                // endTimeHide:false
+                pickerOption:{
+                    disabledDate(time){
+                        return time.getTime() < Date.now();
+                    }
+                }
 
             }
         },
@@ -123,20 +132,7 @@
                         console.log(err);
                     });
             },
-            // initTable() {
-            //     var id = this.$route.params.id;
-            //     this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/scene/selectDetailScene?id=' + id)
-            //         .then(res => {
-            //             if (res.status == 200) {
-            //                 this.info.infoList = res.data.row;
-            //             } else {
-            //                 this.$message.error(res.data.msg);
-            //             }
-            //         })
-            //         .catch(err => {
-            //             console.log(err);
-            //         })
-            // },
+        
             //提交修改
             doSubmit() {
                 // console.log(this.cinema_options)

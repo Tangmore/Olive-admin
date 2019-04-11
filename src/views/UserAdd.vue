@@ -26,9 +26,6 @@
         </el-form-item>
       </el-form>
 
-      <!-- <el-form :label-position="labelPosition" label-width="90px"> -->
-
-      <!-- </el-form> -->
     </div>
     <div style="text-align:center;margin-top: 40px;">
       <el-button type='primary' @click="doSubmit">保存</el-button>

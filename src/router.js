@@ -28,9 +28,6 @@ import cinemaAdd from './views/cinemaAdd.vue'
   import SceneAdd from './views/SceneAdd.vue'
   import SceneInfoEdit from './views/SceneInfoEdit.vue'
 
-//评论
-import commentList from './views/commentList.vue'
-
 //订单管理
 import orderList from './views/OrderList.vue'
 
@@ -67,8 +64,6 @@ export default new Router({
         {path:'/scene/list',component:SceneList},
         {path:'/scene/add',component:SceneAdd},
         {path:'/scene/edit/:id',component:SceneInfoEdit},
-
-        {path:'/comment/list',component:commentList},
 
         {path:'/orders/list',component:orderList},
 

@@ -47,11 +47,15 @@
       </el-form-item>
       <el-form-item label="时间：">
         <el-col :span="7">
-          <el-date-picker type="datetime" placeholder="选择日期" v-model='info.infoList.startTime' value-format='yyyy-MM-dd HH:mm:ss' style="width: 100%;"></el-date-picker>
+          <el-date-picker type="datetime" placeholder="选择日期" v-model='info.infoList.startTime' value-format='yyyy-MM-dd HH:mm:ss' 
+          :picker-options='satrtpickerOption'
+            style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="1">-</el-col>
         <el-col :span="7">
-          <el-date-picker type="datetime" placeholder="选择日期" v-model='info.infoList.endTime' value-format='yyyy-MM-dd HH:mm:ss' style="width: 100%;"></el-date-picker>
+          <el-date-picker type="datetime" placeholder="选择日期" v-model='info.infoList.endTime' 
+          :picker-options='endpickerOption' value-format='yyyy-MM-dd HH:mm:ss'
+            style="width: 100%;"></el-date-picker>
         </el-col>
       </el-form-item>
 
@@ -95,7 +99,23 @@
         type_options: [],
         cinema_options: [],
         cinemaArr: [],
-        imgArr: []
+        imgArr: [],
+  
+        satrtpickerOption: {
+          disabledDate:(time)=> {
+            if (this.info.infoList.endtTime) {
+              return (time.getTime() >new Date(this.info.infoList.endtTime).getTime() );
+            }
+            return time.getTime() < Date.now();
+          }
+        },
+        endpickerOption: {
+          disabledDate:(time)=> {
+            if (this.info.infoList.startTime) {
+              return (time.getTime() <new Date( this.info.infoList.startTime).getTime());
+            }
+          }
+        }
       }
     },
     props: ['id'],

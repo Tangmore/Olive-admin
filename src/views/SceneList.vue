@@ -154,27 +154,6 @@
                 })
             },
       
-            //根据电影场次名查找电影场次
-          //   movienameSearch() {
-          //     this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/movie/selectPageAdmin?map[movieName-like]=' + this.searchContnt)
-          //       .then(res => {
-          //         console.log(res);
-          //         if (res.status == 200) {
-          //           if (res.data.rows) {
-          //             this.page = res.data.page;
-          //             this.total = res.data.total;
-          //             this.currentPageData = res.data.rows;
-          //           } else {
-          //             this.$message.error(res.data.msg);
-          //           }
-      
-          //         } 
-                  
-          //       })
-          //       .catch(err => {
-          //         console.log(err)
-          //       })
-          //   },
             handleSizeChange(val) {
               this.currentPageData = []
               this.page = 0;

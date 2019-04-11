@@ -18,8 +18,7 @@
       </el-table-column>
       <el-table-column label='名称' prop='name' sortable>
       </el-table-column>
-      <!-- <el-table-column label='头像' prop='imgUrl'>
-      </el-table-column> -->
+    
       <el-table-column label='手机号' prop='phone'>
       </el-table-column>
       <el-table-column label='余额' prop='balance'>
@@ -47,7 +46,6 @@
 </template>
 <script>
   import userInfoModal from '../components/user-admin/userInfoModel.vue'
-  // import UserInfoEdit from '../components/user-admin/UserInfoEdit.vue'
   export default {
     data() {
       return {
@@ -119,13 +117,9 @@
           url: url
         })
           .then(res => {
-            // console.log(res);
             if (res.status == 200) {
-              this.$message({
-                message: res.data.msg,
-                type: 'success',
-                duration: 1000
-              });
+              res.data.row.imgUrl=this.$store.state.globalSettings.apiUrl+res.data.row.imgUrl;
+                console.log(res.data.row.imgUrl);
               this.thisuserDetail = res.data.row;
             }
           })
@@ -188,7 +182,6 @@
   }
 
   /* 弹出框*/
-
   .userInfoModal,
   .UserInfoEdit {
     position: absolute;

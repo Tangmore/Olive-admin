@@ -54,7 +54,7 @@
     </el-table>
 
     <!-- 电影列表分页显示 -->
-    <div class="container block">
+    <div class="block">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
         :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
@@ -143,11 +143,11 @@
       // 获取当前电影信息
       MovieInfoDetail(c, index) {
         this.ismovieInfoModal = true;
-        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/movie/selectOneMovie?id=' + c.id)
+        this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/movie/selectPageMovie?map[id]=' + c.id)
           .then(res => {
-            // console.log(res);
+            console.log(res);
             if (res.status == 200) {
-              this.thismovieDetail = res.data.row;
+              this.thismovieDetail = res.data.rows[0];
             } else {
               this.$message.error(res.data.msg);
             }
