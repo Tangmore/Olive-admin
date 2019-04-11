@@ -76,7 +76,7 @@
                 <el-menu-item index='/admin/list'>管理员列表</el-menu-item>
                 <el-menu-item index='/admin'>管理员添加</el-menu-item>
                 <el-menu-item index='/admin/reset'>密码修改</el-menu-item>
-                <el-menu-item index='/mine'>我的</el-menu-item>
+                <!-- <el-menu-item index='/mine'>我的</el-menu-item> -->
               </el-menu-item-group>
             </el-submenu>
 
@@ -182,6 +182,8 @@
         }
       }
     }
-
+  .el-menu-item.is-active{
+    color: #2e3f56;
+  }
   }
 </style>
