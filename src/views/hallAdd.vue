@@ -10,7 +10,7 @@
             <!-- 修改表单 -->
             <div class='editBox' style='width:70%;margin:30px auto;'>
                 <el-form :label-position="labelPosition" label-width="90px">
-                    <el-form-item label="影院名：">
+                    <el-form-item label="影厅名：">
                         <el-input type="text" placeholder="请输入影厅名" v-model="info.infoList.hallName"></el-input>
                     </el-form-item>
 

@@ -25,7 +25,7 @@
         <el-input type="text" placeholder="请输入电影主演" v-model="info.infoList.starring"></el-input>
       </el-form-item>
       <el-form-item label="影片时长:">
-        <el-input type="text" placeholder="请输入电影名" v-model="info.infoList.filmLength"></el-input>
+        <el-input type="text" placeholder="请输入影片时长" v-model="info.infoList.filmLength"></el-input>
       </el-form-item>
 
       <el-form-item label="影片图片：">
