@@ -104,6 +104,7 @@
                         console.log(err);
                     });
             },
+            // 获取电影结束时间
             getMovieEnd(val){
                 var startTime=String(this.info.infoList.startTime);
                 // console.log(startTime)

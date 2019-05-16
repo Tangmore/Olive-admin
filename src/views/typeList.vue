@@ -9,8 +9,12 @@
     <el-button style="margin-bottom:10px;margin-top:20px" type='primary' size='small' plain @click="addtype">添加新的电影类型</el-button>
 
     <el-table :data='currentPageData' style="width:80%" stripe border>
-      <el-table-column label='编号' prop='id'>
-      </el-table-column>
+      <!-- <el-table-column label='编号' prop='id'>
+      </el-table-column> -->
+      <el-table-column label='编号'
+      type="index"
+      width="50">
+    </el-table-column>
       <el-table-column label='名称' prop='typeName'>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width='136px'>

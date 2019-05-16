@@ -19,7 +19,8 @@
         <el-input type="text" placeholder="请输入电影主演" v-model="info.infoList.starring"></el-input>
       </el-form-item>
       <el-form-item label="影片时长:">
-        <el-input type="text" placeholder="请输入电影名" v-model="info.infoList.filmLength"></el-input>
+        <!-- <el-input type="text" placeholder="请输入电影名" v-model="info.infoList.filmLength"></el-input> -->
+           <el-input-number size="medium" controls-position="right" v-model="info.infoList.filmLength" :min='0'></el-input-number>
       </el-form-item>
 
       <el-form-item label="影片图片：">
@@ -32,10 +33,9 @@
 
       <el-form-item label="预告片：">
         <el-upload class="avatar-uploader" :action="videoUrl" accept='.mp4,.ogg,.webm' :show-file-list="true" :before-upload="beforeUploadVideo"
-          :on-success="handleVideoSuccess" :on-progress="uploadVideoProcess">
+          :on-success="handleVideoSuccess" :on-progress="uploadVideoProcess" :limit='1'>
           <video v-if="Video !='' && videoFlag == false" :src="Video" width="350" height="180" controls="controls"></video>
           <i class="el-icon-plus avatar-uploader-icon"></i>
-
         </el-upload>
       </el-form-item>
 
@@ -43,7 +43,7 @@
         <el-input type="text" placeholder="请输入电影折扣" v-model="info.infoList.discount"></el-input>
       </el-form-item>
       <el-form-item label="票价：">
-        <el-input-number size="medium" v-model="info.infoList.price"></el-input-number>
+        <el-input-number size="medium" controls-position="right" v-model="info.infoList.price" :min='0'></el-input-number>
       </el-form-item>
       <el-form-item label="时间：">
         <el-col :span="7">
@@ -231,7 +231,7 @@
         border-color: #409EFF;
       }
       .img-uploader-icon {
-        font-size: 28px;
+        font-size: 24px;
         color: #8c939d;
         width: 50px;
         height: 50px;
@@ -243,6 +243,16 @@
         margin-top: 0 !important;
       }
     }
+  }
+
+  .avatar-uploader{
+    width: 50px;
+    height: 50px;
+    border:1px dashed #d9d9d9;
+    text-align: center;
+    border-radius: 4px;
+    line-height: 50px;
+    font-size: 24px;
   }
 
   .el-col-1 {

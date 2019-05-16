@@ -5,11 +5,16 @@
       <el-header height='60px'>
         <MainHeader />
       </el-header>
-      <el-container style='height:100%'>
+      <el-container>
         <!-- 左侧导航 -->
         <el-aside 
         >
-          <el-menu :unique-opened='true' :router='true' :default-openeds="defaultOpeneds" :default-active="defaultActive">
+          <el-menu :unique-opened='true' :router='true' 
+          :default-openeds="defaultOpeneds" 
+          :default-active="defaultActive"
+           mode="vertical"
+            theme="dark" 
+            class="el-menu-vertical-demo" style='height:100%'>
 
             <el-menu-item index='/user/list'>
               <i class="el-icon-document"></i>

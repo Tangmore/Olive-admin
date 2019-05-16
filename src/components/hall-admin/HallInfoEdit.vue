@@ -16,11 +16,7 @@
                         </el-form-item>
 
                         <el-form-item label="所属影院：">
-                            <el-select v-model="info.infoList.fkCinemaId" clearable placeholder="请选择影院">
-                                <el-option v-for="item in type_options" :key="item.id" :label="item.cinemaName" :value="item.id">
-                                    {{item.fkCinemaName}}
-                                </el-option>
-                            </el-select>
+                            {{info.infoList.fkCinemaName}}
                         </el-form-item>
 
                         <el-form-item label="影厅座位：">

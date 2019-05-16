@@ -7,8 +7,12 @@
         </el-breadcrumb>
 
         <el-table :data='currentPageData' style="width:80%" stripe border>
-            <el-table-column label='编号' prop='id'>
-            </el-table-column>
+            <!-- <el-table-column label='编号' prop='id'>
+            </el-table-column> -->
+            <el-table-column label='编号'
+            type="index"
+            width="50">
+          </el-table-column>
             <el-table-column label='用户名' prop='userName'>
             </el-table-column>
             <el-table-column label="操作" fixed="right" width='136px'>

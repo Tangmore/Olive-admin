@@ -14,8 +14,12 @@
     </div>
     <!-- 电影列表 -->
     <el-table :data='currentPageData' style="width:100%" stripe border>
-      <el-table-column label='id' prop='id' sortable>
-      </el-table-column>
+      <!-- <el-table-column label='id' prop='id' sortable>
+      </el-table-column> -->
+      <el-table-column label='编号'
+      type="index"
+      width="50">
+    </el-table-column>
       <el-table-column label='电影名' prop='movieName'>
       </el-table-column>
       <el-table-column label='评分' prop='praise'>

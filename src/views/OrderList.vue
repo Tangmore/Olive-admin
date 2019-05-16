@@ -13,8 +13,12 @@
     </div>
     <!-- 订单列表 -->
     <el-table :data='currentPageData' style="width:100%" stripe border>
-      <el-table-column label='id' prop='id' sortable>
-      </el-table-column>
+      <!-- <el-table-column label='id' prop='id' sortable>
+      </el-table-column> -->
+      <el-table-column label='编号'
+      type="index"
+      width="50">
+    </el-table-column>
       <el-table-column label='订单编号' prop='orderNum'>
       </el-table-column>
       <el-table-column label='用户名' prop='name'>

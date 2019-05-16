@@ -14,8 +14,12 @@
           </div> -->
           <!-- 电影场次列表 -->
           <el-table :data='currentPageData' style="width:100%" stripe border>
-            <el-table-column label='id' prop='id' sortable>
-            </el-table-column>
+            <!-- <el-table-column label='id' prop='id' sortable>
+            </el-table-column> -->
+            <el-table-column label='编号'
+            type="index"
+            width="50">
+          </el-table-column>
             <el-table-column label='开始时间' prop='startTime'>
               </el-table-column>
               <el-table-column label='结束时间' prop='endTime'>

@@ -13,8 +13,12 @@
     </div>
     <!-- 影院列表 -->
     <el-table :data='currentPageData' style="width:100%" stripe border>
-      <el-table-column label='id' prop='id' sortable>
-      </el-table-column>
+      <!-- <el-table-column label='id' prop='id' sortable>
+      </el-table-column> -->
+      <el-table-column label='编号'
+      type="index"
+      width="50">
+    </el-table-column>
       <el-table-column label='影院名' prop='cinemaName'>
       </el-table-column>
       <el-table-column label='影院地址' prop='cinemaAddress'>
