@@ -22,7 +22,7 @@
                     {{movieDetail.filmLength}}
                 </el-form-item>
                 <el-form-item label="影片图片:">
-                    {{movieDetail.imgUrl}}
+                       <img :src="movieDetail.imgUrl?movieDetail.imgUrl:''" alt="" style="width: 60px;height: 100px;vertical-align:top; "> 
                 </el-form-item>    
                    <el-form-item label="预告片:">
                     {{movieDetail.trailerUrl}}

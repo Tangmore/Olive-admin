@@ -106,6 +106,7 @@
         this.$prompt('请输入新的电影类别名', '提示', { type: 'info' })
           .then(({ value }) => {
             var url = this.$store.state.globalSettings.apiUrl + 'managemodule/type/addType';
+             if(!value){this.$message.error('电影类型名不能为空！');return;}
             this.axios.post(url, { typeName: value })
               .then(res => {
                 if (res.status == 200) {
@@ -127,6 +128,7 @@
           .then(({ value }) => {
             var url = this.$store.state.globalSettings.apiUrl + 'managemodule/type/updateType';
             var data = { id: c.id, typeName: value };
+            if(!value){this.$message.error('电影类型名不能为空！');return;}
             this.axios.post(url, data)
               .then(res => {
                 if (res.status == 200) {

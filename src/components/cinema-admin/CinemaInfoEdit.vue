@@ -8,17 +8,18 @@
       <div class="main">
         <!-- 修改表单 -->
         <div class='editBox' style='width:80%'>
-          <el-form :label-position="labelPosition" label-width="90px">
-            <el-form-item label="影院名：">
+          <el-form :label-position="labelPosition" label-width="90px"
+          :model="info.infoList" :rules="rules" ref="ruleForm" center>
+            <el-form-item label="影院名：" prop="cinemaName">
               <el-input type="text" placeholder="请输入影院名" v-model="info.infoList.cinemaName"></el-input>
             </el-form-item>
-            <el-form-item label="地址：">
+            <el-form-item label="地址：" prop='cinemaAddress'>
               <el-input type="text" placeholder="请输入影院地址" v-model="info.infoList.cinemaAddress"></el-input>
             </el-form-item>
           </el-form>
         </div>
         <div style="text-align:center">
-          <el-button type='primary' @click="doSubmit">保存</el-button>
+          <el-button type='primary' @click="doSubmit('ruleForm')">保存</el-button>
           <el-button @click="changeIs" type='info' plain>取消</el-button>
         </div>
       </div>
@@ -33,14 +34,24 @@
         info: {
           infoList: { cinemaName: '', cinemaAddress: '' },
         },
+          rules: {
+          cinemaName: [
+            { required: true, message: '请输入影院名', trigger: 'blur' }
+          ],
+          cinemaAddress: [
+            { required: true, message: '请输入影院地址', trigger: 'blur' }
+          ]
+        },
         labelPosition: 'right'
       }
     },
     props: ['id'],
     methods: {
       //提交修改
-      doSubmit() {
-        var that = this;
+      doSubmit(formName) {
+             this.$refs[formName].validate((valid) => {
+          if (valid) {
+           var that = this;
         var url = this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/updateCinema?id=' + this.id;
         this.axios.post(url, this.info.infoList)
           .then(res => {
@@ -51,6 +62,8 @@
           .catch(err => {
             this.$message.error('编辑影院失败！')
           })
+          }
+        })
       },
       // 子传父----关闭弹出框
       changeIs() {

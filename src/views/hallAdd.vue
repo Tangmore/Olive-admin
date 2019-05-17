@@ -9,12 +9,12 @@
 
             <!-- 修改表单 -->
             <div class='editBox' style='width:70%;margin:30px auto;'>
-                <el-form :label-position="labelPosition" label-width="90px">
-                    <el-form-item label="影厅名：">
+                <el-form :label-position="labelPosition" label-width="100px" :model="info.infoList" :rules="rules" ref="ruleForm" center>
+                    <el-form-item label="影厅名：" prop='hallName'>
                         <el-input type="text" placeholder="请输入影厅名" v-model="info.infoList.hallName"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="所属影院：">
+                    <el-form-item label="所属影院：" prop='fkCinemaId'>
                         <el-select v-model="info.infoList.fkCinemaId" clearable placeholder="请选择影院">
                             <el-option v-for="item in type_options" :key="item.id" :label="item.cinemaName" :value="item.id">
                                 {{item.cinemaName}}
@@ -34,7 +34,7 @@
                 </el-form>
             </div>
             <div style="text-align:center">
-                <el-button type='primary' @click="doSubmit">保存</el-button>
+                <el-button type='primary' @click="doSubmit('ruleForm')">保存</el-button>
                 <el-button @click="changeIs" type='info' plain>取消</el-button>
             </div>
         </div>
@@ -48,6 +48,14 @@
                 info: {
                     infoList: { hallName: '', fkCinemaId: '', line: '', col: '' },
                 },
+                rules: {
+                    hallName: [
+                        { required: true, message: '请输入影厅名', trigger: 'blur' }
+                    ],
+                    fkCinemaId: [
+                        { required: true, message: '请输入影院', trigger: 'blur' }
+                    ],
+                },
                 labelPosition: 'right',
                 type_options: [],
             }
@@ -56,19 +64,23 @@
 
         methods: {
             //提交
-            doSubmit() {
-                this.info.infoList.line = Number(this.info.infoList.line);
-                this.info.infoList.col = Number(this.info.infoList.col);
-                var url = this.$store.state.globalSettings.apiUrl + 'managemodule/hall/addHall';
-                this.axios.post(url, this.info.infoList)
-                    .then(res => {
-                        this.$message.success(res.data.msg);
-                        // this.$bus.$emit('changeCinemaInfo');
-                        this.$router.push('/hall/list');
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+            doSubmit(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.info.infoList.line = Number(this.info.infoList.line);
+                        this.info.infoList.col = Number(this.info.infoList.col);
+                        var url = this.$store.state.globalSettings.apiUrl + 'managemodule/hall/addHall';
+                        this.axios.post(url, this.info.infoList)
+                            .then(res => {
+                                this.$message.success(res.data.msg);
+                                // this.$bus.$emit('changeCinemaInfo');
+                                this.$router.push('/hall/list');
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
+                })
             },
             changeIs() {
                 this.info.infoList = {};

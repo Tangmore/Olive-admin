@@ -8,17 +8,17 @@
 
     <!-- 修改表单 -->
     <div class='editBox' style='width:70%;margin:30px auto;'>
-      <el-form  label-width="100px" class="demo-ruleForm">
-        <el-form-item label="影院名：" prop="name">
+      <el-form label-width="100px" class="demo-ruleForm" :model="userInfo" :rules="rules" ref="ruleForm" center>
+        <el-form-item label="影院名：" prop="cinemaName">
           <el-input type='text' placeholder='请输入影院名称' v-model="userInfo.cinemaName"></el-input>
         </el-form-item>
-        <el-form-item label="影院地址" prop='addr'>
+        <el-form-item label="影院地址" prop='cinemaAddress'>
           <el-input type="text" placeholder="请输入影院地址" v-model="userInfo.cinemaAddress"></el-input>
         </el-form-item>
       </el-form>
     </div>
     <div style="text-align:center;margin-top: 40px;">
-      <el-button type='primary' @click="doSubmit">保存</el-button>
+      <el-button type='primary' @click="doSubmit('ruleForm')">保存</el-button>
       <el-button @click="doCancel" type='info' plain>取消</el-button>
     </div>
   </div>
@@ -31,45 +31,45 @@
       return {
         userInfo: {
           cinemaName: '',
-          cinemaAddress:''
+          cinemaAddress: ''
+        },
+        rules: {
+          cinemaName: [
+            { required: true, message: '请输入影院名', trigger: 'blur' }
+          ],
+          cinemaAddress: [
+            { required: true, message: '请输入影院地址', trigger: 'blur' }
+          ]
         },
         originUserInfo: {},
         labelPosition: 'right'
       }
-        },
-        methods: {
-          //确认添加
-          doSubmit() {
-            if(!(this.userInfo.cinemaName && this.userInfo.cinemaAddress )){
-              this.$message.error('请输入必要信息！');
-              return;
-            }
-            this.$confirm('确认添加该影院？', '提示', { type: 'warning' })
-              .then(() => {
-                var url = this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/addCinema';
-                this.axios.post(url, this.userInfo)
-                  .then(res => {
-                    if (res.status == 200) {
-                        this.$message.success(res.data.msg);
-                        this.userInfo = {};
-                    } 
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  })
-              }).catch(() => {
-                this.$message({
-                  type: 'info',
-                  message: '已取消添加影院！'
-                })
+    },
+    methods: {
+      //确认添加
+      doSubmit(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var url = this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/addCinema';
+            this.axios.post(url, this.userInfo)
+              .then(res => {
+                if (res.status == 200) {
+                  this.$message.success(res.data.msg);
+                  this.userInfo = {};
+                }
               })
-          },
-          doCancel() {
-            this.userInfo = {}
+              .catch(err => {
+                console.log(err);
+              })
           }
-        }
+        })
+      },
+      doCancel() {
+        this.userInfo = {}
       }
-    
+    }
+  }
+
 </script>
 <style lang="scss">
 </style>

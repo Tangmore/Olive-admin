@@ -7,36 +7,33 @@
         </el-breadcrumb>
 
     <!-- 修改表单 -->
-    <el-form :label-position="labelPosition" label-width="90px" style='width:80%;margin:30px auto;'>
-      <el-form-item label="影名：">
+    <el-form :label-position="labelPosition" label-width="100px" 
+    style='width:80%;margin:30px auto;' :model="info.infoList" 
+    :rules="rules" ref="ruleForm" center>
+      <el-form-item label="影名：" prop="movieName">
         <el-input type="text" placeholder="请输入电影名称" v-model="info.infoList.movieName"></el-input>
       </el-form-item>
-      <!-- <el-form-item label="评分：">
-        <el-input type="text" placeholder="请输入电影主演" v-model="info.infoList.praise"></el-input>
-      </el-form-item> -->
-      <el-form-item label="电影类型：">
+
+      <el-form-item label="主演：" prop='starring'>
+        <el-input type="text" placeholder="请输入电影主演" v-model="info.infoList.starring"></el-input>
+      </el-form-item>
+      <el-form-item label="电影类型：" prop="fkTypeId">
         <el-select v-model="info.infoList.fkTypeId" clearable placeholder="请选择电影类型">
           <el-option v-for="item in type_options" :key="item.id" :label="item.typeName" :value="item.id">
             {{item.typeName}}
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="主演：">
-        <el-input type="text" placeholder="请输入电影主演" v-model="info.infoList.starring"></el-input>
-      </el-form-item>
-      <el-form-item label="影片时长:">
-        <el-input type="text" placeholder="请输入影片时长" v-model="info.infoList.filmLength"></el-input>
-      </el-form-item>
 
-      <el-form-item label="影片图片：">
+      <el-form-item label="影片图片：" prop='imgUrl'>
         <el-upload class="img-uploader" :action="uploadAction" :show-file-list='true' :before-upload='beforeImgUpload' :before-remove='beforeRemove'
           :on-success='handleSuccess' :limit='1'>
           <i class="el-icon-plus img-uploader-icon"></i>
-          <span slot="tip" class="el-upload__tip" style="margin-left: 20px">只能上传gif/jpg/jpeg/png,且不能超过500kb</span>
+          <!-- <span slot="tip" class="el-upload__tip" style="margin-left: 20px">只能上传gif/jpg/jpeg/png,且不能超过500kb</span> -->
         </el-upload>
       </el-form-item>
 
-      <el-form-item label="预告片：">
+      <el-form-item label="预告片：" prop='trailerUrl'>
         <el-upload class="avatar-uploader" :action="videoUrl" accept='.mp4,.ogg,.webm' :show-file-list="true" :before-upload="beforeUploadVideo"
           :on-success="handleVideoSuccess" :on-progress="uploadVideoProcess">
           <video v-if="Video !='' && videoFlag == false" :src="Video" width="350" height="180" controls="controls"></video>
@@ -45,13 +42,21 @@
         </el-upload>
       </el-form-item>
 
-      <el-form-item label="折扣：">
-        <el-input type="text" placeholder="请输入电影折扣" v-model="info.infoList.discount"></el-input>
+      <el-form-item label="影片时长:" prop='filmLength'>
+        <el-input-number size="medium" controls-position="right" 
+        v-model="info.infoList.filmLength" :min='0'></el-input-number>
       </el-form-item>
-      <el-form-item label="票价：">
-        <el-input-number size="medium" v-model="info.infoList.price"></el-input-number>
+      <el-form-item label="折扣：" prop='discount'>
+        <el-input-number size="medium" controls-position="right" 
+        v-model="info.infoList.discount" 
+        :step='0.1' :min='0' :max='1'></el-input-number>
       </el-form-item>
-      <el-form-item label="时间：">
+      <el-form-item label="票价：" prop='price'>
+          <el-input-number size="medium" controls-position="right" 
+          v-model="info.infoList.price"
+           :min='0' :step='2'></el-input-number>
+      </el-form-item>
+      <el-form-item label="时间：" prop='startTime'>
         <el-col :span="7">
           <el-date-picker type="datetime" placeholder="选择日期" v-model='info.infoList.startTime' 
           value-format='yyyy-MM-dd HH:mm:ss' 
@@ -66,13 +71,17 @@
         </el-col>
       </el-form-item>
 
-      <el-form-item label="电影描述：">
+      <el-form-item label="电影描述：" prop='describle'>
         <el-input type="textarea" style="width:74%" :autosize="{minRows:3}" resize='none' v-model="info.infoList.describle" placeholder="请输入电影简介"></el-input>
       </el-form-item>
-      <div style="text-align: center;margin-right: 100px;">
+      <!-- <div style="text-align: center;margin-right: 100px;">
         <el-button type='primary' @click="doSubmit">提交</el-button>
         <el-button @click="doCancel" type='info' plain>取消</el-button>
-      </div>
+      </div> -->
+    <el-form-item>
+      <el-button type='primary' @click="doSubmit('ruleForm')">提交</el-button>
+      <el-button @click="doCancel" type='info' plain>取消</el-button>
+    </el-form-item>
     </el-form>
 
   </div>
@@ -93,6 +102,32 @@
             endTime: '', describle: ''
           },
 
+        },
+        rules: {
+          movieName: [
+            { required: true, message: '请输入电影名称', trigger: 'blur' }
+          ], 
+          // fkTypeId: [
+          //   { required: true, message: '请输入电影类型', trigger: 'blur' }
+          // ],
+          starring: [
+            { required: true, message: '请输入电影主演', trigger: 'blur' }
+          ],   
+          filmLength: [
+            { required: true, message: '请输入电影时长', trigger: 'blur' }
+          ], 
+          imgUrl: [
+            { required: true, message: '请输入电影图片', trigger: 'blur' }
+          ],
+          discount: [
+            { required: true, message: '请输入电影折扣', trigger: 'blur' }
+          ],
+          price: [
+            { required: true, message: '请输入电影价格', trigger: 'blur' }
+          ],
+          describle: [
+            { required: true, message: '请输入电影描述', trigger: 'blur' }
+          ],
         },
         videoFlag: false,      //刚开始的时候显示为flase
         videoUploadPercent: '0%',  //进度条刚开始的时候为0%
@@ -188,19 +223,23 @@
         this.info.infoList.imgUrl = res.row;
       },
       //提交修改
-      doSubmit() {
-        // console.log(this.cinema_options)
-        console.log(this.info.infoList.trailerUrl);
-        var id = this.$route.params.id;
-        var url = this.$store.state.globalSettings.apiUrl + 'managemodule/movie/addMovie';
-        this.axios.post(url, this.info.infoList)
-          .then(res => {
-            this.$message.success(res.data.msg);
-            this.$router.push('/movie/list');
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      doSubmit(formName) {
+        this.$refs[formName].validate((valid)=>{
+          if(valid){
+            // alert('submit');
+              var id = this.$route.params.id;
+              var url = this.$store.state.globalSettings.apiUrl + 'managemodule/movie/addMovie';
+              this.axios.post(url, this.info.infoList)
+                .then(res => {
+                  this.$message.success(res.data.msg);
+                  this.$router.push('/movie/list');
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+          }
+        })
+       
       },
       doCancel() {
         this.initTable();

@@ -1,8 +1,9 @@
 <template>
     <div class="main">
         <!-- 修改表单 -->
-        <el-form :label-position="labelPosition" label-width="90px" style='width:80%;margin:30px auto;'>
-            <el-form-item label="时间：">
+        <el-form :label-position="labelPosition" label-width="100px" style='width:80%;margin:30px auto;' :model="info.infoList" :rules="rules"
+            ref="ruleForm" center>
+            <el-form-item label="时间：" prop='startTime'>
                 <el-col :span="7">
                     <el-date-picker type="datetime" placeholder="开始时间" v-model='info.infoList.startTime' value-format='yyyy-MM-dd HH:mm:ss' :picker-options='pickerOption'
                         style="width: 100%;" @change='getMovieEnd'></el-date-picker>
@@ -12,16 +13,15 @@
                 {{info.infoList.fkMovieName}}
             </el-form-item>
 
-            <el-form-item label="影院：">
+            <el-form-item label="影院：" prop='fkCinemaId'>
                 <el-select v-model="info.infoList.fkCinemaId" @change='initHall' clearable placeholder="请选择影院">
-                    <el-option v-for="item in cinema_options" :key="item.id" 
-                    :label="item.cinemaName" :value="item.id">
+                    <el-option v-for="item in cinema_options" :key="item.id" :label="item.cinemaName" :value="item.id">
                         {{item.cinemaName}}
                     </el-option>
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="影厅：">
+            <el-form-item label="影厅：" prop='fkHallId'>
                 <el-select v-model="info.infoList.fkHallId" clearable placeholder="请选择影厅">
                     <el-option v-for="item in hall_options" :key="item.id" :label="item.hallName" :value="item.id">
                         {{item.hallName}}
@@ -30,7 +30,7 @@
             </el-form-item>
 
             <div style="text-align: center;margin-right: 100px;">
-                <el-button type='primary' @click="doSubmit">提交</el-button>
+                <el-button type='primary' @click="doSubmit('ruleForm')">提交</el-button>
                 <el-button @click="doCancel" type='info' plain>取消</el-button>
             </div>
         </el-form>
@@ -45,8 +45,19 @@
             return {
                 info: {
                     infoList: {
-                       
+
                     },
+                },
+                rules: {
+                    startTime: [
+                        { required: true, message: '请输入场次开始时间', trigger: 'blur' }
+                    ],
+                    fkCinemaId: [
+                        { required: true, message: '请选择影院', trigger: 'blur' }
+                    ],
+                    fkHallId: [
+                        { required: true, message: '请选择影厅', trigger: 'blur' }
+                    ],
                 },
                 labelPosition: 'right',
                 cinema_options: [],
@@ -56,28 +67,28 @@
                         return time.getTime() < Date.now();
                     }
                 }
-                
+
             }
         },
         props: ['id'],
         mounted() {
             // 初始化当前电影信息     
-            this.initTable(); 
+            this.initTable();
             // this.initCinema();     
             //初始化影院
-                this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/selectAllCinema')
-                    .then(res => {
-                        console.log(res);
-                        this.cinema_options = res.data.rows;
+            this.axios.get(this.$store.state.globalSettings.apiUrl + 'managemodule/cinema/selectAllCinema')
+                .then(res => {
+                    console.log(res);
+                    this.cinema_options = res.data.rows;
 
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         },
         methods: {
             // initCinema() {
-           
+
             // },
             // 获取电影结束时间
             getMovieEnd(val) {
@@ -124,7 +135,7 @@
                     })
             },
             //提交修改
-            doSubmit() {
+            doSubmit(formName) {
                 var id = this.$route.params.id;
                 var url = this.$store.state.globalSettings.apiUrl + 'managemodule/scene/updateScene?id=' + id;
                 var data = {
@@ -134,15 +145,18 @@
                     fkCinemaId: this.info.infoList.fkCinemaId,
                     fkHallId: this.info.infoList.fkHallId
                 };
-                // console.log(data)
-                this.axios.post(url, data)
-                    .then(res => {
-                        this.$message.success(res.data.msg);
-                        this.$router.push('/scene/list');
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.axios.post(url, data)
+                            .then(res => {
+                                this.$message.success(res.data.msg);
+                                this.$router.push('/scene/list');
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
+                })
 
             },
             doCancel() {

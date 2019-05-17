@@ -10,18 +10,18 @@
         <!-- 修改表单 -->
         <div class='addForm' >
             <div class='editBox' style='width:70%;margin:30px auto;'>
-                <el-form label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="管理员名：" prop="name">
-                        <input type="text" placeholder='请输入管理员名' class="el-input__inner" @blur='isNameUse' v-model="userInfo.userName">
-                        <p style="color:red;font-size: 14px" v-show='isError'>{{errorTip}}</p>
+                <el-form label-width="100px" class="demo-ruleForm"
+                :model="userInfo" :rules="rules" ref="ruleForm" center >
+                    <el-form-item label="管理员名：" prop="userName">
+                        <el-input type="text" placeholder='请输入管理员名'  v-model="userInfo.userName"></el-input>
                     </el-form-item>
-                    <el-form-item label="密码" prop='addr'>
+                    <el-form-item label="密码" prop='password'>
                         <el-input type="password" placeholder="请输入密码" v-model="userInfo.password"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <div style="text-align:center;margin-top: 40px;">
-                <el-button type='primary' @click="doSubmit">保存</el-button>
+                <el-button type='primary' @click="doSubmit('ruleForm')">保存</el-button>
                 <el-button @click="doCancel" type='info' plain>取消</el-button>
             </div>
         </div>
@@ -37,27 +37,24 @@
                     userName: '',
                     password: ''
                 },
+                   rules: {
+                    userName: [
+                        { required: true, message: '请输入管理员名', trigger: 'blur' }
+                    ],
+                    password: [
+                        { required: true, message: '请输入操作密码', trigger: 'blur' }
+                    ]
+                },
                 originUserInfo: {},
                 labelPosition: 'right',
-                // isadminAdd: false,
-                isError: false,
-                errorTip: ''
             }
         },
         methods: {
             //确认添加
-            doSubmit() {
-                if (!(this.userInfo.userName && this.userInfo.password)) {
-                    this.$message.error('请输入必要信息！');
-                    return;
-                }
-                if (this.isError) {
-                    this.$message.error('请保持输入信息格式正确！');
-                    return;
-                }
-                this.$confirm('确认添加该管理员？', '提示', { type: 'warning' })
-                    .then(() => {
-                        var url = this.$store.state.globalSettings.apiUrl + 'managemodule/admin/addAdmin';
+            doSubmit(formName) {
+                  this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                       var url = this.$store.state.globalSettings.apiUrl + 'managemodule/admin/addAdmin';
                         this.axios({
                             method: 'POST',
                             url: url,
@@ -78,19 +75,8 @@
                             .catch(err => {
                                 console.log(err);
                             })
-                    }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '已取消添加管理员信息！'
-                        })
-                    })
-            },
-            isNameUse() {
-                if (!this.userInfo.userName) {
-                    this.errorTip = '用户名不能为空！';
-                    this.isError = true;
-                    return;
-                }
+                    }
+                })
             },
             doCancel() {
                 this.userInfo = {}

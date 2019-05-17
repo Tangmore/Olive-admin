@@ -8,11 +8,10 @@
             <div class="main">
                 <!-- 修改表单 -->
                 <div class='editBox' style='width:80%'>
-                    <el-form :label-position="labelPosition" label-width="90px">
-                        <el-form-item label="影院名：">
-                            <el-input type="text" 
-                            placeholder="请输入影厅名" 
-                            v-model="info.infoList.hallName"></el-input>
+                    <el-form :label-position="labelPosition" 
+                    label-width="90px" :model="info.infoList" :rules="rules" ref="ruleForm" center>
+                        <el-form-item label="影厅名：" prop='hallName'>
+                            <el-input type="text" placeholder="请输入影厅名" v-model="info.infoList.hallName"></el-input>
                         </el-form-item>
 
                         <el-form-item label="所属影院：">
@@ -21,7 +20,7 @@
 
                         <el-form-item label="影厅座位：">
                             <el-col :span='9'>
-                                <el-input type="text" placeholder="输入行数" v-model="info.infoList.line" ></el-input>
+                                <el-input type="text" placeholder="输入行数" v-model="info.infoList.line"></el-input>
                             </el-col>
                             <el-col class="line" :span="1">-</el-col>
                             <el-col :span='9'>
@@ -31,7 +30,7 @@
                     </el-form>
                 </div>
                 <div style="text-align:center">
-                    <el-button type='primary' @click="doSubmit">保存</el-button>
+                    <el-button type='primary' @click="doSubmit('ruleForm')">保存</el-button>
                     <el-button @click="changeIs" type='info' plain>取消</el-button>
                 </div>
             </div>
@@ -46,6 +45,11 @@
                 info: {
                     infoList: { hallName: '', fkCinemaId: '', line: '', col: '' },
                 },
+                rules: {
+                    hallName: [
+                        { required: true, message: '请输入影厅名', trigger: 'blur' }
+                    ]
+                },
                 labelPosition: 'right',
                 type_options: [],
             }
@@ -54,19 +58,23 @@
 
         methods: {
             //提交修改
-            doSubmit() {
-                this.info.infoList.line=Number(this.info.infoList.line);
-                this.info.infoList.col=Number(this.info.infoList.col);
-                var url = this.$store.state.globalSettings.apiUrl + 'managemodule/hall/updateHall?id=' + this.id;
-                this.axios.post(url, this.info.infoList)
-                    .then(res => {
-                        this.$message.success(res.data.msg);
-                        this.$bus.$emit('changeCinemaInfo');
-                        this.changeIs();
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+            doSubmit(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.info.infoList.line = Number(this.info.infoList.line);
+                        this.info.infoList.col = Number(this.info.infoList.col);
+                        var url = this.$store.state.globalSettings.apiUrl + 'managemodule/hall/updateHall?id=' + this.id;
+                        this.axios.post(url, this.info.infoList)
+                            .then(res => {
+                                this.$message.success(res.data.msg);
+                                this.$bus.$emit('changeCinemaInfo');
+                                this.changeIs();
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
+                })
             },
             // 子传父----关闭弹出框
             changeIs() {

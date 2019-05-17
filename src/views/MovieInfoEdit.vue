@@ -1,7 +1,9 @@
 <template>
   <div class="main">
     <!-- 修改表单 -->
-    <el-form :label-position="labelPosition" label-width="90px" style='width:80%;margin:30px auto;'>
+    <el-form :label-position="labelPosition" label-width="90px" 
+    style='width:80%;margin:30px auto;' :model="info.infoList" 
+    :rules="rules" ref="ruleForm" center>
       <el-form-item label="影名：">
         {{info.infoList.movieName}}
       </el-form-item>
@@ -15,19 +17,14 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="主演：">
+      <el-form-item label="主演：" prop='starring'>
         <el-input type="text" placeholder="请输入电影主演" v-model="info.infoList.starring"></el-input>
-      </el-form-item>
-      <el-form-item label="影片时长:">
-        <!-- <el-input type="text" placeholder="请输入电影名" v-model="info.infoList.filmLength"></el-input> -->
-           <el-input-number size="medium" controls-position="right" v-model="info.infoList.filmLength" :min='0'></el-input-number>
       </el-form-item>
 
       <el-form-item label="影片图片：">
         <el-upload class="img-uploader" :action="uploadAction" :show-file-list='true' :before-upload='beforeImgUpload' :before-remove='beforeRemove'
           :on-success='handleSuccess' :limit='1'>
           <i class="el-icon-plus img-uploader-icon"></i>
-          <span slot="tip" class="el-upload__tip" style="margin-left: 20px">只能上传gif/jpg/jpeg/png,且不能超过500kb</span>
         </el-upload>
       </el-form-item>
 
@@ -39,11 +36,18 @@
         </el-upload>
       </el-form-item>
 
-      <el-form-item label="折扣：">
-        <el-input type="text" placeholder="请输入电影折扣" v-model="info.infoList.discount"></el-input>
+      <el-form-item label="影片时长:">
+           <el-input-number size="medium" controls-position="right" 
+           v-model="info.infoList.filmLength" :min='0'></el-input-number>
+      </el-form-item>
+      <el-form-item label="折扣：" prop='discount'>
+        <el-input-number size="medium" controls-position="right" 
+        v-model="info.infoList.discount" 
+        :step='0.1' :min='0' :max='1'></el-input-number>
       </el-form-item>
       <el-form-item label="票价：">
-        <el-input-number size="medium" controls-position="right" v-model="info.infoList.price" :min='0'></el-input-number>
+        <el-input-number size="medium" controls-position="right" 
+        v-model="info.infoList.price"  :min='0' :step='2'></el-input-number>
       </el-form-item>
       <el-form-item label="时间：">
         <el-col :span="7">
@@ -59,13 +63,14 @@
         </el-col>
       </el-form-item>
 
-      <el-form-item label="电影描述：">
+      <el-form-item label="电影描述：" prop='describle'>
         <el-input type="textarea" style="width:74%" :autosize="{minRows:3}" resize='none' v-model="info.infoList.describle" placeholder="请输入电影简介"></el-input>
       </el-form-item>
-      <div style="text-align: center;margin-right: 100px;">
-        <el-button type='primary' @click="doSubmit">提交</el-button>
+
+      <el-form-item style="text-align: center;margin-right: 100px;">
+        <el-button type='primary' @click="doSubmit('ruleForm')">提交</el-button>
         <el-button @click="doCancel" type='info' plain>取消</el-button>
-      </div>
+      </el-form-item>
     </el-form>
 
   </div>
@@ -86,6 +91,29 @@
             endTime: '', describle: ''
           },
 
+        },
+        rules: {
+          movieName: [
+            { required: true, message: '请输入电影名称', trigger: 'blur' }
+          ], 
+          starring: [
+            { required: true, message: '请输入电影主演', trigger: 'blur' }
+          ],   
+          filmLength: [
+            { required: true, message: '请输入电影时长', trigger: 'blur' }
+          ], 
+          imgUrl: [
+            { required: true, message: '请输入电影图片', trigger: 'blur' }
+          ],
+          discount: [
+            { required: true, message: '请输入电影折扣', trigger: 'blur' }
+          ],
+          price: [
+            { required: true, message: '请输入电影价格', trigger: 'blur' }
+          ],
+          describle: [
+            { required: true, message: '请输入电影描述', trigger: 'blur' }
+          ],
         },
         videoFlag: false,      //刚开始的时候显示为flase
         videoUploadPercent: '0%',  //进度条刚开始的时候为0%
@@ -199,9 +227,9 @@
         this.info.infoList.imgUrl = res.row;
       },
       //提交修改
-      doSubmit() {
-        // console.log(this.cinema_options)
-        console.log(this.info.infoList.trailerUrl);
+      doSubmit(formName) {
+        this.$refs[formName].validate((valid)=>{
+          if(valid){
         var id = this.$route.params.id;
         var url = this.$store.state.globalSettings.apiUrl + 'managemodule/movie/updateMovie?id=' + id;
         this.axios.post(url, this.info.infoList)
@@ -212,6 +240,10 @@
           .catch(err => {
             console.log(err);
           })
+          }
+        })
+
+      
       },
       doCancel() {
         this.initTable();

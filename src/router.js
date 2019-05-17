@@ -5,9 +5,6 @@ import Main from './views/Main.vue'
 import NotFound from './views/NotFound.vue'
 // 用户
 import UserList from './views/UserList.vue'
-import UserAdd from './views/UserAdd.vue'
-// import UserDetail from './views/UserDetail.vue'
-// import UserInfoEdit from './views/UserInfoEdit.vue'
 
 // 电影信息
 import movieList from './views/movieList.vue'
@@ -49,7 +46,6 @@ export default new Router({
       children: [
         {path:'',redirect:'/user/list'},        
         {path:'/user/list',component:UserList},
-        {path:'/user/add',component:UserAdd},
       
         {path:'/movie/list',component:movieList},
         {path:'/movie/add',component:movieAdd},

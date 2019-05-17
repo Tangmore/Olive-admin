@@ -91,7 +91,7 @@
     },
     mounted() {
       this.$bus.$on('changeCinemaInfo', () => {
-        infoInit(this.pageSize,this.currentPage);
+        this.infoInit(this.pageSize,this.currentPage);
       })
      this.infoInit(this.pageSize,this.currentPage);
     },

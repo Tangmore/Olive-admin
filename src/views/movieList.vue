@@ -151,6 +151,7 @@
           .then(res => {
             console.log(res);
             if (res.status == 200) {
+                 res.data.rows[0].imgUrl=this.$store.state.globalSettings.apiUrl+res.data.rows[0].imgUrl;
               this.thismovieDetail = res.data.rows[0];
             } else {
               this.$message.error(res.data.msg);
