@@ -14,8 +14,6 @@
     </div>
     <!-- 电影列表 -->
     <el-table :data='currentPageData' style="width:100%" stripe border>
-      <!-- <el-table-column label='id' prop='id' sortable>
-      </el-table-column> -->
       <el-table-column label='编号'
       type="index"
       width="50">
@@ -30,22 +28,16 @@
       </el-table-column>
       <el-table-column label='影片时长' prop='filmLength' sortable>
       </el-table-column>
-      <el-table-column label='影片图片' prop='imgUrl'>
-      </el-table-column>
-      <el-table-column label='预告片' prop='trailerUrl'>
-      </el-table-column>
       <el-table-column label='折扣' prop='discount'>
       </el-table-column>
-      <el-table-column label='浏览量' prop='browseNum'>
-      </el-table-column>
+      <!-- <el-table-column label='浏览量' prop='browseNum'>
+      </el-table-column> -->
       <el-table-column label='票价' prop='price' sortable>
       </el-table-column>
       <el-table-column label='上映时间' prop='startTime' sortable>
       </el-table-column>
       <el-table-column label='下架时间' prop='endTime' sortable>
       </el-table-column>
-      <!-- <el-table-column label='电影描述' prop='describle'>
-      </el-table-column> -->
       <el-table-column fixed="right" label="操作" width='136px'>
         <!-- 插槽作用域的解构  -->
         <template slot-scope="{row,$index}">
@@ -67,10 +59,6 @@
     <!-- 电影详情模态框 -->
     <MovieInfoModel class="movieInfoModal" v-show='ismovieInfoModal' :movieDetail='thismovieDetail' @tellShow='changeInfoShow'
     />
-
-    <!-- 电影信息编辑模态框 -->
-    <!-- <MovieInfoEdit class="movieInfoEdit" v-if='ismovieInfoEdit' :id='thismovieID' @tellEditShow='changeEditShow' /> -->
-
   </div>
 
   </div>
@@ -152,6 +140,8 @@
             console.log(res);
             if (res.status == 200) {
                  res.data.rows[0].imgUrl=this.$store.state.globalSettings.apiUrl+res.data.rows[0].imgUrl;
+                // console.log(res.data.row.imgUrl);
+                // console.log(res.data.rows[0].imgUrl)
               this.thismovieDetail = res.data.rows[0];
             } else {
               this.$message.error(res.data.msg);

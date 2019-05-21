@@ -38,7 +38,7 @@
           :on-success="handleVideoSuccess" :on-progress="uploadVideoProcess">
           <video v-if="Video !='' && videoFlag == false" :src="Video" width="350" height="180" controls="controls"></video>
           <i class="el-icon-plus avatar-uploader-icon"></i>
-
+         <!-- <span slot="tip" class="el-upload__tip" style="margin-left: 20px">（可选）</span> -->
         </el-upload>
       </el-form-item>
 

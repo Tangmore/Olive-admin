@@ -10,7 +10,6 @@
                     {{userDetail.name}}
                 </el-form-item>
                 <el-form-item label="头像：">
-                  <!-- {{userDetail.imgUrl}} -->
                     <img :src="userDetail.imgUrl?userDetail.imgUrl:''" alt="" style="width: 100px;height: 100px;vertical-align:top; "> 
                 </el-form-item>
                 <el-form-item label="手机号：">
@@ -35,7 +34,6 @@
             }
         },
         mounted(){
-            // this.userDetail.imgUrl= this.$store.state.globalSettings.apiUrl+imgUrl;
          
         }
     }

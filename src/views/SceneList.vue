@@ -43,7 +43,7 @@
           <!-- 电影场次列表分页显示 -->
           <div class="block">
             <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-              :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+              :page-sizes="[10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
           </div>
       
@@ -74,7 +74,7 @@
               // 总页数
               totalPage: 0,
               // 每页显示条数
-              pageSize: 6,
+              pageSize: 10,
               // 当前页
               currentPage: 1,
               // 总条数
