@@ -1,0 +1,201 @@
+.el-table >>> th,
+.el-table >>> tr,
+.el-table >>> .el-radio{
+  font-size:14px;
+  font-family:MicrosoftYaHei;
+  font-weight:400;
+}
+.el-table >>> td,
+.el-table >>> th.is-leaf {
+  border-bottom: 1px solid #EEEEEE;
+}
+.el-table >>> th{
+  background-color: #FAFAFA;
+  color: #787878;
+  padding: 0;
+}
+.el-table >>> td{
+  padding: 0;
+}
+.el-table >>> tr{
+  height: 50px;
+  color: #787878;
+  /*padding: 0;*/
+}
+.el-table >>>.el-table--striped .el-table__body tr.el-table__row--striped.current-row td,
+.el-table >>>.el-table__body tr.current-row>td,
+.el-table >>>.el-table__body tr.hover-row.current-row>td,
+.el-table >>>.el-table__body tr.hover-row.el-table__row--striped.current-row>td,
+.el-table >>>.el-table__body tr.hover-row.el-table__row--striped>td,
+.el-table >>>.el-table__body tr.hover-row>td {
+  background-color: var(--tableactivecolor);
+}
+
+.el-table >>>.el-table__body tr>td .el-switch__core{
+width:20px !important;
+}
+.el-table >>>.el-table__body tr>td .el-switch.is-checked .el-switch__core{
+  background-color: #fff !important;
+  border-width: 2px;
+}
+
+/*switch文字描述*/
+.el-table >>>.el-table__body tr>td .switchStyle{
+  margin-left: -30px;
+}
+.el-table >>>.el-table__body tr>td .switchStyle .el-switch__label {
+  position: absolute;
+  display: none;
+  color:rgba(135,135,135,1);
+}
+.el-table >>>.el-table__body tr>td .switchStyle.is-checked .el-switch__label {
+  color:var(--activecolor);
+}
+.el-table >>>.el-table__body tr>td .switchStyle .el-switch__label--left {
+  z-index: 9;
+  left: 30px;
+}
+.el-table >>>.el-table__body tr>td .switchStyle .el-switch__label--right {
+  z-index: 9;
+  left: 20px;
+}
+.el-table >>>.el-table__body tr>td .switchStyle .el-switch__label.is-active {
+  display: block;
+}
+/*.el-table >>>.el-table__body tr>td .switchStyle.el-switch .el-switch__core,*/
+/*.el-table >>>.el-table__body tr>td .el-switch .el-switch__label {*/
+  /*width: 50px !important;*/
+/*}*/
+/*.el-table >>>.el-table__body tr>td .el-switch .el-switch__core:after{*/
+  /*width: 14px;*/
+  /*height: 14px;*/
+/*}*/
+.el-table >>>.el-table__body tr>td .el-switch.is-checked .el-switch__core:after{
+  background-color: var(--activecolor);
+  width: 10px;
+  height: 10px;
+  top: 3px;
+}
+.el-table >>>.el-table__body tr>td .el-switch.is-checked .el-switch__core::after {
+  margin-left: -13px;
+}
+/*.el-table >>>.el-table__body tr.current-row>td{*/
+  /*border: 0;*/
+/*}*/
+.el-table >>> .el-table--border::after,
+.el-table >>> .el-table--group::after,
+.el-table::before,
+.el-table >>> .el-table__fixed-right::before,
+.el-table >>> .el-table__fixed::before{
+  height:0 !important;
+}
+.el-table >>> .el-table__fixed-right-patch {
+  background-color: #FAFAFA;
+}
+/*表格中的check*/
+.el-table >>> .el-checkbox__input .el-checkbox__inner:hover,
+.el-table >>> .el-checkbox__input.is-focus .el-checkbox__inner{
+  border-color: var(--activecolor);
+}
+.el-table >>> .el-checkbox__input.is-checked .el-checkbox__inner,
+.el-table >>> .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: var(--activecolor);
+  border-color: var(--activecolor);
+}
+/*表格中的radio*/
+.el-table >>> .el-radio__input.is-checked .el-radio__inner{
+  border-color: var(--activecolor);
+  background: var(--activecolor);
+}
+.el-table >>> .el-radio__inner:hover{
+  border-color: var(--activecolor);
+}
+.el-radio{
+  color: #878787;
+}
+.el-table >>> .el-radio__input.is-checked+.el-radio__label{
+  color: var(--activecolor);
+}
+/*状态点的颜色和大小*/
+.circleDot{
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #d0d0d0;
+  border-radius: 50%;
+  margin-right: 3px;
+}
+/*在架*/
+.mygreen{
+  background-color: var(--mygreen);
+}
+/*未在架*/
+.myred{
+  background-color: var(--myred);
+}
+/*待取*/
+.myblue{
+  background-color: var(--myblue);
+}
+/*借出*/
+.myyellow{
+  background-color: var(--myyellow);
+}
+/*遗失*/
+.mypurple{
+  background-color: var(--mypurple);
+}
+/*其他*/
+.mygray{
+  background-color: var(--mygray);
+}
+/*销毁*/
+.myskyorange{
+  background-color: var(--myskyorange);
+}
+/*销毁中*/
+.myorange{
+  background-color:var(--myorange);
+}
+/*移交中*/
+.mydarkgreen{
+  background-color:var(--mydarkgreen);
+}
+/*待归档*/
+.myskyblue{
+  background-color: var(--myskyblue);
+}
+/*归档中*/
+.mydarkblue{
+  background-color: var(--mydarkblue);
+}
+/*移交*/
+.myskygreen{
+  background-color: var(--myskygreen);
+}
+/*表格中button按钮*/
+.el-button--text{
+  color: var(--activecolor);
+}
+.el-button--text.is-disabled{
+  color: var(--activecolor);
+  opacity: 0.5;
+}
+.el-button--text.red{
+  color: #F86E6E;
+}
+.el-button--text.gray{
+  color: #878787;
+}
+
+/*表格滚动条*/
+.el-table >>> .el-table__body-wrapper::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  /*border-color: transparent;*/
+}
+.el-table >>> .el-table__body-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--activecolor);
+  border-radius: 6px;
+}
+
