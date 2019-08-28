@@ -1,5 +1,5 @@
 <template>
-  <div class="userEditmain">
+  <div class="contentDomain">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator='/'>
       <el-breadcrumb-item :to="{path:'/main'}">用户</el-breadcrumb-item>
@@ -11,9 +11,9 @@
       <el-input placeholder="请输入用户名" v-model="searchContnt" size="small" clearable>
         <el-button slot="append" size="small" @click='usernameSearch'>搜索</el-button>
       </el-input>
-    </div>
+    </div> 
     <!-- 用户列表 -->
-    <el-table :data='currentPageData' style="width:100%" stripe border>
+    <el-table :data='currentPageData' style="width:100%" stripe border >
       <!-- <el-table-column label='id' prop='id' sortable>
       </el-table-column> -->
       <el-table-column label='编号'
@@ -41,11 +41,9 @@
         :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
     <!-- 用户详情模态框 -->
     <userInfoModal class="userInfoModal" v-show='isuserInfoModal' :userDetail='thisuserDetail' @tellShow='changeInfoShow' />
   </div>
-
   </div>
 </template>
 <script>
@@ -58,6 +56,7 @@
         //所有信息
         infoAll: [],
         searchContnt: "",
+        height:'',
         // 总页数
         totalPage: 0,
         // 每页显示条数
@@ -70,7 +69,7 @@
         // 用户信息编辑
         isuserInfoEdit: false,
         thisuserID: "",
-        total:0
+        total:0 
       }
     },
 

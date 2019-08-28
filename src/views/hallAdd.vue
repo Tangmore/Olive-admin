@@ -1,5 +1,5 @@
 <template>
-    <div class="cinemadetail">
+    <div class="contentDomain">
         <!-- 面包屑导航 -->
         <el-breadcrumb separator='/'>
             <el-breadcrumb-item :to="{path:'/hall/list'}">影厅管理</el-breadcrumb-item>

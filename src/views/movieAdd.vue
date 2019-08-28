@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="contentDomain">
     <!-- 面包屑导航 -->
         <el-breadcrumb separator='/'>
             <el-breadcrumb-item :to="{path:'/main'}">电影管理</el-breadcrumb-item>

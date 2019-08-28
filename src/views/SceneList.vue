@@ -1,5 +1,5 @@
 <template>
-        <div class="movieEditmain">
+        <div class="contentDomain">
           <!-- 面包屑导航 -->
           <el-breadcrumb separator='/'>
             <el-breadcrumb-item :to="{path:'/main'}">电影场次</el-breadcrumb-item>

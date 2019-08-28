@@ -35,7 +35,7 @@
       height:100%;
       width:800px;
       background: -webkit-repeating-linear-gradient(30deg, rgb(133, 116, 226) 0, rgba(114, 92, 240, 1) 10px,rgba(51, 37, 129, 0.5) 10px, rgba(111, 91, 230, 0.1) 20px);
-      -webkit-animation: move 5s linear infinite;
+      -webkit-animation: move 4s linear infinite;
     }
     .text{
       width: 400px;
@@ -63,15 +63,23 @@
       background-color: var(--activecolor);
       color: #fff;
     }
+
+    .contentDomain{
+      padding: 20px;
+      height: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
   </style>
   <body>
     <div id="app" >
       <div class="processcontainer">
         <div id="processbar" ><div class="text">LOADING...</div></div>
-        <!--style="width:0%;"-->
+     
       </div>
     </div>
-    <!-- built files will be auto injected -->
+    
   </body>
   <script type="text/javascript">
  

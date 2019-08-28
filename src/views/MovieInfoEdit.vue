@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="contentDomain">
     <!-- 修改表单 -->
     <el-form :label-position="labelPosition" label-width="90px" 
     style='width:80%;margin:30px auto;' :model="info.infoList" 

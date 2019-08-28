@@ -32,7 +32,7 @@
   background:rgba(246,245,250,1);
 }
 body{
-  --menucolor:rgba(29, 26, 59, 1);   /* 侧边菜单背景颜色 */
+  --menucolor:#001529;   /* 侧边菜单背景颜色 */
   --menuinnercolor:rgb(34, 31, 65, 1);  /* 侧边菜单里面背景颜色 */
   --menuopacity:rgba(26, 179, 148, 0.3);/* 侧边菜单透明背景颜色 */
   --activecolor:rgb(19, 194, 194);/* hover和active选中颜色 */

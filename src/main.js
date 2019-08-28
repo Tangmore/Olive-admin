@@ -5,12 +5,17 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/font/iconfont.css';
+
+//公用js自适应高度
+// import {common} from './assets/common/common.js'
 import axios from 'axios'
 // axios.defaults.baseURL='http://127.0.0.1:8082/';
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI)  //注册ElementUI
 Vue.prototype.axios=axios;
+
+// Vue.prototype.common=common;
 Vue.prototype.$bus = new Vue();
 //创建全局过滤器
 function formatNumber(n){
