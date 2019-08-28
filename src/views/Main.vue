@@ -90,18 +90,17 @@
             };
         },
         mounted() {
-
+            if(!sessionStorage.getItem('token')){
+                 this.$router.push('/login');
+            }
         },
         computed: {
-            // ...mapState(["User"]),
-            // ...mapState(["token"]),
-            // ...mapState(["keepAlive"]),
+           
         },
 
         methods: {
             // 管理员下拉菜单切换
             menuChange(command) {
-                // this.$router.push('/PersonalCenter?ind=' + command);
             },
             init() {
                 var index = layer.load(1, {
